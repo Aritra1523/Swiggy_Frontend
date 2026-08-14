@@ -202,30 +202,20 @@ export const updateOrderStatus = createAsyncThunk<
     data: UpdateOrderStatusPayload;
   },
   { rejectValue: string }
->(
-  "order/updateOrderStatus",
-  async (
-    { id, data },
-    { rejectWithValue },
-  ) => {
-    try {
-      const response =
-        await axiosInstance.put<OrderResponse>(
-          endpoints.updateOrderStatus(id),
-          data,
-        );
+>("order/updateOrderStatus", async ({ id, data }, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.put<OrderResponse>(
+      endpoints.updateOrderStatus(id),
+      data,
+    );
 
-      return response.data;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message ||
-          "Failed to update order status",
-      );
-    }
-  },
-);
-
-
+    return response.data;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to update order status",
+    );
+  }
+});
 
 const orderSlice = createSlice({
   name: "order",
@@ -250,307 +240,192 @@ const orderSlice = createSlice({
   extraReducers: (builder) => {
     builder
 
-    
       // ADD CART
-    
 
       .addCase(addToCart.pending, (state) => {
         state.cartLoading = true;
         state.cartError = null;
       })
 
-      .addCase(
-        addToCart.fulfilled,
-        (state, action) => {
-          state.cartLoading = false;
+      .addCase(addToCart.fulfilled, (state, action) => {
+        state.cartLoading = false;
 
-          if (action.payload.data) {
-            state.cart =
-              action.payload.data;
-          }
-        },
-      )
+        if (action.payload.data) {
+          state.cart = action.payload.data;
+        }
+      })
 
-      .addCase(
-        addToCart.rejected,
-        (state, action) => {
-          state.cartLoading = false;
+      .addCase(addToCart.rejected, (state, action) => {
+        state.cartLoading = false;
 
-          state.cartError =
-            action.payload ||
-            "Failed to add item";
-        },
-      )
+        state.cartError = action.payload || "Failed to add item";
+      })
 
-    
       // FETCH CART
-    
 
       .addCase(fetchCart.pending, (state) => {
         state.cartLoading = true;
         state.cartError = null;
       })
 
-      .addCase(
-        fetchCart.fulfilled,
-        (state, action) => {
-          state.cartLoading = false;
+      .addCase(fetchCart.fulfilled, (state, action) => {
+        state.cartLoading = false;
 
-          state.cart =
-            action.payload.data;
-        },
-      )
+        state.cart = action.payload.data;
+      })
 
-      .addCase(
-        fetchCart.rejected,
-        (state, action) => {
-          state.cartLoading = false;
+      .addCase(fetchCart.rejected, (state, action) => {
+        state.cartLoading = false;
 
-          state.cartError =
-            action.payload ||
-            "Failed to fetch cart";
-        },
-      )
+        state.cartError = action.payload || "Failed to fetch cart";
+      })
 
-    
       // DELETE CART ITEM
-    
 
-      .addCase(
-        deleteCartItem.pending,
-        (state) => {
-          state.cartLoading = true;
-          state.cartError = null;
-        },
-      )
+      .addCase(deleteCartItem.pending, (state) => {
+        state.cartLoading = true;
+        state.cartError = null;
+      })
 
-      .addCase(
-        deleteCartItem.fulfilled,
-        (state, action) => {
-          state.cartLoading = false;
+      .addCase(deleteCartItem.fulfilled, (state, action) => {
+        state.cartLoading = false;
 
-          if (action.payload.data) {
-            state.cart =
-              action.payload.data;
-          } else {
-            state.cart = null;
-          }
-        },
-      )
+        if (action.payload.data) {
+          state.cart = action.payload.data;
+        } else {
+          state.cart = null;
+        }
+      })
 
-      .addCase(
-        deleteCartItem.rejected,
-        (state, action) => {
-          state.cartLoading = false;
+      .addCase(deleteCartItem.rejected, (state, action) => {
+        state.cartLoading = false;
 
-          state.cartError =
-            action.payload ||
-            "Failed to update cart";
-        },
-      )
+        state.cartError = action.payload || "Failed to update cart";
+      })
 
-    
       // PLACE ORDER
-    
 
       .addCase(placeOrder.pending, (state) => {
         state.orderLoading = true;
         state.orderError = null;
       })
 
-      .addCase(
-        placeOrder.fulfilled,
-        (state, action) => {
-          state.orderLoading = false;
+      .addCase(placeOrder.fulfilled, (state, action) => {
+        state.orderLoading = false;
 
-          if (action.payload.data) {
-            state.orders.unshift(
-              action.payload.data,
-            );
-          }
+        if (action.payload.data) {
+          state.orders.unshift(action.payload.data);
+        }
 
-          // Backend deletes cart
-          state.cart = null;
-        },
-      )
+        // Backend deletes cart
+        state.cart = null;
+      })
 
-      .addCase(
-        placeOrder.rejected,
-        (state, action) => {
-          state.orderLoading = false;
+      .addCase(placeOrder.rejected, (state, action) => {
+        state.orderLoading = false;
 
-          state.orderError =
-            action.payload ||
-            "Failed to place order";
-        },
-      )
+        state.orderError = action.payload || "Failed to place order";
+      })
 
-    
       // MY ORDERS
-    
 
-      .addCase(
-        fetchMyOrders.pending,
-        (state) => {
-          state.orderLoading = true;
-          state.orderError = null;
-        },
-      )
+      .addCase(fetchMyOrders.pending, (state) => {
+        state.orderLoading = true;
+        state.orderError = null;
+      })
 
-      .addCase(
-        fetchMyOrders.fulfilled,
-        (state, action) => {
-          state.orderLoading = false;
+      .addCase(fetchMyOrders.fulfilled, (state, action) => {
+        state.orderLoading = false;
 
-          state.orders =
-            action.payload.data;
-        },
-      )
+        state.orders = action.payload.data;
+      })
 
-      .addCase(
-        fetchMyOrders.rejected,
-        (state, action) => {
-          state.orderLoading = false;
+      .addCase(fetchMyOrders.rejected, (state, action) => {
+        state.orderLoading = false;
 
-          state.orderError =
-            action.payload ||
-            "Failed to fetch orders";
-        },
-      )
+        state.orderError = action.payload || "Failed to fetch orders";
+      })
 
-    
       // ORDER DETAILS
-    
 
-      .addCase(
-        fetchOrderDetails.pending,
-        (state) => {
-          state.loading = true;
-          state.error = null;
-        },
-      )
+      .addCase(fetchOrderDetails.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
 
-      .addCase(
-        fetchOrderDetails.fulfilled,
-        (state, action) => {
-          state.loading = false;
+      .addCase(fetchOrderDetails.fulfilled, (state, action) => {
+        state.loading = false;
 
-          state.selectedOrder =
-            action.payload.data;
-        },
-      )
+        state.selectedOrder = action.payload.data;
+      })
 
-      .addCase(
-        fetchOrderDetails.rejected,
-        (state, action) => {
-          state.loading = false;
+      .addCase(fetchOrderDetails.rejected, (state, action) => {
+        state.loading = false;
 
-          state.error =
-            action.payload ||
-            "Failed to fetch order";
-        },
-      )
+        state.error = action.payload || "Failed to fetch order";
+      })
 
-    
       // CANCEL ORDER
-    
 
-      .addCase(
-        cancelOrder.pending,
-        (state) => {
-          state.orderLoading = true;
-          state.orderError = null;
-        },
-      )
+      .addCase(cancelOrder.pending, (state) => {
+        state.orderLoading = true;
+        state.orderError = null;
+      })
 
-      .addCase(
-        cancelOrder.fulfilled,
-        (state, action) => {
-          state.orderLoading = false;
+      .addCase(cancelOrder.fulfilled, (state, action) => {
+        state.orderLoading = false;
 
-          if (action.payload.data) {
-            state.selectedOrder =
-              action.payload.data;
+        if (action.payload.data) {
+          state.selectedOrder = action.payload.data;
 
-            const index =
-              state.orders.findIndex(
-                (order) =>
-                  order._id ===
-                  action.payload.data?._id,
-              );
+          const index = state.orders.findIndex(
+            (order) => order._id === action.payload.data?._id,
+          );
 
-            if (index !== -1) {
-              state.orders[index] =
-                action.payload.data;
-            }
+          if (index !== -1) {
+            state.orders[index] = action.payload.data;
           }
-        },
-      )
+        }
+      })
 
-      .addCase(
-        cancelOrder.rejected,
-        (state, action) => {
-          state.orderLoading = false;
+      .addCase(cancelOrder.rejected, (state, action) => {
+        state.orderLoading = false;
 
-          state.orderError =
-            action.payload ||
-            "Failed to cancel order";
-        },
-      )
+        state.orderError = action.payload || "Failed to cancel order";
+      })
 
-    
       // UPDATE ORDER STATUS
-    
 
-      .addCase(
-        updateOrderStatus.pending,
-        (state) => {
-          state.orderLoading = true;
-          state.orderError = null;
-        },
-      )
+      .addCase(updateOrderStatus.pending, (state) => {
+        state.orderLoading = true;
+        state.orderError = null;
+      })
 
-      .addCase(
-        updateOrderStatus.fulfilled,
-        (state, action) => {
-          state.orderLoading = false;
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {
+        state.orderLoading = false;
 
-          if (action.payload.data) {
-            state.selectedOrder =
-              action.payload.data;
+        if (action.payload.data) {
+          state.selectedOrder = action.payload.data;
 
-            const index =
-              state.orders.findIndex(
-                (order) =>
-                  order._id ===
-                  action.payload.data?._id,
-              );
+          const index = state.orders.findIndex(
+            (order) => order._id === action.payload.data?._id,
+          );
 
-            if (index !== -1) {
-              state.orders[index] =
-                action.payload.data;
-            }
+          if (index !== -1) {
+            state.orders[index] = action.payload.data;
           }
-        },
-      )
+        }
+      })
 
-      .addCase(
-        updateOrderStatus.rejected,
-        (state, action) => {
-          state.orderLoading = false;
+      .addCase(updateOrderStatus.rejected, (state, action) => {
+        state.orderLoading = false;
 
-          state.orderError =
-            action.payload ||
-            "Failed to update order status";
-        },
-      );
+        state.orderError = action.payload || "Failed to update order status";
+      });
   },
 });
 
-export const {
-  clearOrderError,
-  clearCartError,
-  clearSelectedOrder,
-} = orderSlice.actions;
+export const { clearOrderError, clearCartError, clearSelectedOrder } =
+  orderSlice.actions;
 
 export default orderSlice.reducer;

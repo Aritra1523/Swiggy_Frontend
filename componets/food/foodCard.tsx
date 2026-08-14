@@ -13,26 +13,24 @@ export default function FoodCard({ food }: Props) {
   const [isHovered, setIsHovered] = useState(false);
   // const [isAdded, setIsAdded] = useState(false);
 
-
-
   const { handleAddToCart, cart } = useCart();
 
-const cartItem = cart?.items?.find(
-  (item) => item.food?._id === food._id || item.food === food._id
-);
+  const cartItem = cart?.items?.find(
+    (item) => item.food?._id === food._id || item.food === food._id,
+  );
 
-const quantity = cartItem?.quantity || 0;
+  const quantity = cartItem?.quantity || 0;
 
-const handleQuickAdd  = async () => {
-  try {
-    await addItemToCart({
-      foodId: food._id,
-      quantity: 1,
-    });
-  } catch (error) {
-    console.error("Failed to add cart item", error);
-  }
-};
+  const handleQuickAdd = async () => {
+    try {
+      await handleAddToCart({
+        foodId: food._id,
+        quantity: 1,
+      });
+    } catch (error) {
+      console.error("Failed to add cart item", error);
+    }
+  };
 
   return (
     <div
@@ -48,16 +46,12 @@ const handleQuickAdd  = async () => {
             alt={food.itemName}
             className="w-full h-full object-cover transition-transform duration-300"
             style={{
-              transform: isHovered
-                ? "scale(1.05)"
-                : "scale(1)",
+              transform: isHovered ? "scale(1.05)" : "scale(1)",
             }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-200">
-            <span className="text-gray-400 text-sm">
-              No Image
-            </span>
+            <span className="text-gray-400 text-sm">No Image</span>
           </div>
         )}
 
@@ -72,9 +66,7 @@ const handleQuickAdd  = async () => {
         <div className="absolute top-3 right-3">
           <span
             className={`px-2 py-1 rounded-full text-xs font-bold shadow-md ${
-              food.isVeg
-                ? "bg-green-500 text-white"
-                : "bg-red-500 text-white"
+              food.isVeg ? "bg-green-500 text-white" : "bg-red-500 text-white"
             }`}
           >
             {food.isVeg ? "VEG" : "NON-VEG"}
@@ -84,17 +76,21 @@ const handleQuickAdd  = async () => {
         {/* ================= QUICK ADD ================= */}
         {isHovered && food.isAvailable && (
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-           <button
-  disabled={!food.isAvailable}
-  onClick={handleQuickAdd}
-  className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-    food.isAvailable
-      ? "bg-orange-500 hover:bg-orange-600 text-white"
-      : "bg-gray-300 text-gray-500 cursor-not-allowed"
-  }`}
->
-  {food.isAvailable ? (quantity > 0 ? `ADD (${quantity})` : "ADD") : "Unavailable"}
-</button>
+            <button
+              disabled={!food.isAvailable}
+              onClick={handleQuickAdd}
+              className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                food.isAvailable
+                  ? "bg-orange-500 hover:bg-orange-600 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              {food.isAvailable
+                ? quantity > 0
+                  ? `ADD (${quantity})`
+                  : "ADD"
+                : "Unavailable"}
+            </button>
           </div>
         )}
       </div>
@@ -108,30 +104,24 @@ const handleQuickAdd  = async () => {
 
         {/* Restaurant */}
         <p className="text-sm text-gray-600 mt-1 line-clamp-1">
-          {food.restaurant?.restaurantName ||
-            "Unknown Restaurant"}
+          {food.restaurant?.restaurantName || "Unknown Restaurant"}
         </p>
 
         {/* Location */}
         <p className="text-xs text-gray-400 mt-1 line-clamp-1">
-          {food.restaurant?.location ||
-            "Location not available"}
+          {food.restaurant?.location || "Location not available"}
         </p>
 
         {/* Description */}
         <p className="text-sm text-gray-500 mt-2 line-clamp-2">
-          {food.description ||
-            "No description available"}
+          {food.description || "No description available"}
         </p>
 
         {/* ================= RATING ================= */}
         <div className="flex items-center gap-2 mt-3">
           <div className="flex items-center bg-green-50 px-2 py-1 rounded">
             <span className="text-sm font-bold text-green-700">
-              ★{" "}
-              {food.rating !== undefined
-                ? food.rating.toFixed(1)
-                : "N/A"}
+              ★ {food.rating !== undefined ? food.rating.toFixed(1) : "N/A"}
             </span>
           </div>
 
@@ -143,18 +133,14 @@ const handleQuickAdd  = async () => {
         {/* ================= PRICE ================= */}
         <div className="flex items-center gap-2 mt-3">
           <span className="font-bold text-lg text-gray-900">
-            ₹
-            {food.discountPrice ||
-              food.basePrice}
+            ₹{food.discountPrice || food.basePrice}
           </span>
 
-          {food.discountPrice &&
-            food.basePrice >
-              food.discountPrice && (
-              <span className="text-sm text-gray-400 line-through">
-                ₹{food.basePrice}
-              </span>
-            )}
+          {food.discountPrice && food.basePrice > food.discountPrice && (
+            <span className="text-sm text-gray-400 line-through">
+              ₹{food.basePrice}
+            </span>
+          )}
         </div>
 
         {/* ================= BOTTOM ================= */}
@@ -164,16 +150,20 @@ const handleQuickAdd  = async () => {
           </span>
 
           <button
-  disabled={!food.isAvailable}
-  onClick={handleQuickAdd}
-  className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-    food.isAvailable
-      ? "bg-orange-500 hover:bg-orange-600 text-white"
-      : "bg-gray-300 text-gray-500 cursor-not-allowed"
-  }`}
->
-  {food.isAvailable ? (quantity > 0 ? `ADD (${quantity})` : "ADD") : "Unavailable"}
-</button>
+            disabled={!food.isAvailable}
+            onClick={handleQuickAdd}
+            className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+              food.isAvailable
+                ? "bg-orange-500 hover:bg-orange-600 text-white"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            {food.isAvailable
+              ? quantity > 0
+                ? `ADD (${quantity})`
+                : "ADD"
+              : "Unavailable"}
+          </button>
         </div>
       </div>
     </div>

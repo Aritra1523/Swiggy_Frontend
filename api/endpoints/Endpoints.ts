@@ -5,24 +5,21 @@ export const endpoints = {
 
   //user
   foodList: "/user/food_list",
-  addCart: "/add/cart",
-   cartList: "/list/cart",
 
-  deleteCartItem: (foodId: string) =>
-    `/cart/item/${foodId}`,
+  addCart: "/add/cart",
+  cartList: "/list/cart",
+
+  deleteCartItem: (foodId: string) => `/cart/item/${foodId}`,
 
   placeOrder: "/order/place",
 
   myOrders: "/orders/my-orders",
 
-  orderDetails: (id: string) =>
-    `/orders/${id}`,
+  orderDetails: (id: string) => `/orders/${id}`,
 
-  cancelOrder: (id: string) =>
-    `/orders/${id}/cancel`,
+  cancelOrder: (id: string) => `/orders/${id}/cancel`,
 
-  updateOrderStatus: (id: string) =>
-    `/orders/${id}/status`,
+  updateOrderStatus: (id: string) => `/orders/${id}/status`,
 
   //Partner
   applyRestaurat: "/auth/apply/restaurant",
