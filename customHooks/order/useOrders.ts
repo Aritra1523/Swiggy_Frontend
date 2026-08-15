@@ -1,10 +1,7 @@
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
-import {
-  AppDispatch,
-  RootState,
-} from "@/redux/store/store";
+import { AppDispatch, RootState } from "@/redux/store/store";
 
 import {
   placeOrder,
@@ -22,26 +19,15 @@ import {
 const useOrders = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const {
-    orders,
-    selectedOrder,
-    orderLoading,
-    orderError,
-  } = useSelector(
-    (state: RootState) => state.order
+  const { orders, selectedOrder, orderLoading, orderError } = useSelector(
+    (state: RootState) => state.order,
   );
 
- 
   // PLACE ORDER
- 
 
-  const handlePlaceOrder = async (
-    data: PlaceOrderPayload
-  ) => {
+  const handlePlaceOrder = async (data: PlaceOrderPayload) => {
     try {
-      const response = await dispatch(
-        placeOrder(data)
-      ).unwrap();
+      const response = await dispatch(placeOrder(data)).unwrap();
 
       return response;
     } catch (error) {
@@ -49,15 +35,11 @@ const useOrders = () => {
     }
   };
 
- 
   // MY ORDERS
- 
 
   const handleFetchMyOrders = async () => {
     try {
-      const response = await dispatch(
-        fetchMyOrders()
-      ).unwrap();
+      const response = await dispatch(fetchMyOrders()).unwrap();
 
       return response;
     } catch (error) {
@@ -65,17 +47,11 @@ const useOrders = () => {
     }
   };
 
- 
   // ORDER DETAILS
- 
 
-  const handleFetchOrderDetails = async (
-    id: string
-  ) => {
+  const handleFetchOrderDetails = async (id: string) => {
     try {
-      const response = await dispatch(
-        fetchOrderDetails(id)
-      ).unwrap();
+      const response = await dispatch(fetchOrderDetails(id)).unwrap();
 
       return response;
     } catch (error) {
@@ -83,17 +59,11 @@ const useOrders = () => {
     }
   };
 
- 
   // CANCEL ORDER
- 
 
-  const handleCancelOrder = async (
-    id: string
-  ) => {
+  const handleCancelOrder = async (id: string) => {
     try {
-      const response = await dispatch(
-        cancelOrder(id)
-      ).unwrap();
+      const response = await dispatch(cancelOrder(id)).unwrap();
 
       return response;
     } catch (error) {
@@ -101,20 +71,18 @@ const useOrders = () => {
     }
   };
 
- 
   // UPDATE ORDER STATUS
- 
 
   const handleUpdateOrderStatus = async (
     id: string,
-    data: UpdateOrderStatusPayload
+    data: UpdateOrderStatusPayload,
   ) => {
     try {
       const response = await dispatch(
         updateOrderStatus({
           id,
           data,
-        })
+        }),
       ).unwrap();
 
       return response;

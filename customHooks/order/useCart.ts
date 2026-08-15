@@ -65,7 +65,7 @@ import { AppDispatch, RootState } from "@/redux/store/store";
 import {
   addToCart,
   fetchCart,
-  deleteCartItem,
+  deleteCartItem, // this is really "decrementOrRemoveLast"
 } from "@/redux/slice/order/order";
 
 import { AddCartPayload } from "@/typescript/order/order";
@@ -77,20 +77,23 @@ const useCart = () => {
     (state: RootState) => state.order,
   );
 
-  // ADD TO CART
-  const handleAddToCart = async (data: AddCartPayload) => {
-    const result = await dispatch(addToCart(data)).unwrap();
-    await dispatch(fetchCart()).unwrap();
-    return result;
-  };
+  // ADD TO CART (additive: +1, or whatever quantity is passed)
+  const handleAddToCart = useCallback(
+    async (data: AddCartPayload) => {
+      const result = await dispatch(addToCart(data)).unwrap();
+      await dispatch(fetchCart()).unwrap(); // repopulate food/restaurant
+      return result;
+    },
+    [dispatch],
+  );
 
   // FETCH CART
   const handleFetchCart = useCallback(async () => {
     return await dispatch(fetchCart()).unwrap();
   }, [dispatch]);
 
-  // DECREASE / REMOVE ITEM
-  const handleDeleteCartItem = useCallback(
+  // DECREMENT BY 1 (removes the line once it hits 0) — matches backend exactly
+  const handleDecrementCartItem = useCallback(
     async (foodId: string) => {
       const result = await dispatch(deleteCartItem(foodId)).unwrap();
       await dispatch(fetchCart()).unwrap();
@@ -99,28 +102,15 @@ const useCart = () => {
     [dispatch],
   );
 
-  // UPDATE QUANTITY
-  const handleUpdateQuantity = useCallback(
-    async (foodId: string, newQuantity: number, currentQuantity: number) => {
-      if (newQuantity < 1) {
-        await handleDeleteCartItem(foodId);
-        return;
-      }
-
-      if (newQuantity > currentQuantity) {
-        // Increasing: addToCart is additive, so only send the delta (+1)
-        await dispatch(
-          addToCart({ foodId, quantity: 1 } as AddCartPayload),
-        ).unwrap();
-        await dispatch(fetchCart()).unwrap();
-      } else {
-        // Decreasing (but not to 0): no dedicated endpoint wired up yet — see note below
-        console.warn(
-          "Decrement without removal has no backend endpoint wired up",
-        );
-      }
+  // "+": always send a delta of 1, backend is additive
+  const handleIncrementCartItem = useCallback(
+    async (foodId: string) => {
+      await dispatch(
+        addToCart({ foodId, quantity: 1 } as AddCartPayload),
+      ).unwrap();
+      await dispatch(fetchCart()).unwrap();
     },
-    [dispatch, handleDeleteCartItem],
+    [dispatch],
   );
 
   return {
@@ -130,8 +120,8 @@ const useCart = () => {
 
     handleAddToCart,
     handleFetchCart,
-    handleDeleteCartItem,
-    handleUpdateQuantity,
+    handleDecrementCartItem,
+    handleIncrementCartItem,
   };
 };
 
