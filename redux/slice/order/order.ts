@@ -139,7 +139,6 @@ export const placeOrder = createAsyncThunk<
   }
 });
 
-
 //Get My Orders
 export const fetchMyOrders = createAsyncThunk<
   OrdersResponse,
@@ -197,27 +196,27 @@ export const cancelOrder = createAsyncThunk<
 
 //Update Order Status
 
-export const updateOrderStatus = createAsyncThunk<
-  OrderResponse,
-  {
-    id: string;
-    data: UpdateOrderStatusPayload;
-  },
-  { rejectValue: string }
->("order/updateOrderStatus", async ({ id, data }, { rejectWithValue }) => {
-  try {
-    const response = await axiosInstance.put<OrderResponse>(
-      endpoints.updateOrderStatus(id),
-      data,
-    );
+// export const updateOrderStatus = createAsyncThunk<
+//   OrderResponse,
+//   {
+//     id: string;
+//     data: UpdateOrderStatusPayload;
+//   },
+//   { rejectValue: string }
+// >("order/updateOrderStatus", async ({ id, data }, { rejectWithValue }) => {
+//   try {
+//     const response = await axiosInstance.put<OrderResponse>(
+//       endpoints.updateOrderStatus(id),
+//       data,
+//     );
 
-    return response.data;
-  } catch (error: any) {
-    return rejectWithValue(
-      error.response?.data?.message || "Failed to update order status",
-    );
-  }
-});
+//     return response.data;
+//   } catch (error: any) {
+//     return rejectWithValue(
+//       error.response?.data?.message || "Failed to update order status",
+//     );
+//   }
+// });
 
 const orderSlice = createSlice({
   name: "order",
@@ -369,6 +368,8 @@ const orderSlice = createSlice({
 
       // CANCEL ORDER
 
+      // CANCEL ORDER
+
       .addCase(cancelOrder.pending, (state) => {
         state.orderLoading = true;
         state.orderError = null;
@@ -377,7 +378,11 @@ const orderSlice = createSlice({
       .addCase(cancelOrder.fulfilled, (state, action) => {
         state.orderLoading = false;
 
+        // action.meta.arg is the order id passed into dispatch(cancelOrder(id))
+        const cancelledId = action.meta.arg;
+
         if (action.payload.data) {
+          // Backend sent the full updated order — use it as-is
           state.selectedOrder = action.payload.data;
 
           const index = state.orders.findIndex(
@@ -386,6 +391,26 @@ const orderSlice = createSlice({
 
           if (index !== -1) {
             state.orders[index] = action.payload.data;
+          }
+        } else {
+          // Backend only confirmed success with no order back — patch the
+          // status locally so the UI still reflects the cancellation.
+          const index = state.orders.findIndex(
+            (order) => order._id === cancelledId,
+          );
+
+          if (index !== -1) {
+            state.orders[index] = {
+              ...state.orders[index],
+              status: "cancelled",
+            };
+          }
+
+          if (state.selectedOrder?._id === cancelledId) {
+            state.selectedOrder = {
+              ...state.selectedOrder,
+              status: "cancelled",
+            };
           }
         }
       })
@@ -394,36 +419,36 @@ const orderSlice = createSlice({
         state.orderLoading = false;
 
         state.orderError = action.payload || "Failed to cancel order";
-      })
-
-      // UPDATE ORDER STATUS
-
-      .addCase(updateOrderStatus.pending, (state) => {
-        state.orderLoading = true;
-        state.orderError = null;
-      })
-
-      .addCase(updateOrderStatus.fulfilled, (state, action) => {
-        state.orderLoading = false;
-
-        if (action.payload.data) {
-          state.selectedOrder = action.payload.data;
-
-          const index = state.orders.findIndex(
-            (order) => order._id === action.payload.data?._id,
-          );
-
-          if (index !== -1) {
-            state.orders[index] = action.payload.data;
-          }
-        }
-      })
-
-      .addCase(updateOrderStatus.rejected, (state, action) => {
-        state.orderLoading = false;
-
-        state.orderError = action.payload || "Failed to update order status";
       });
+
+    // UPDATE ORDER STATUS
+
+    // .addCase(updateOrderStatus.pending, (state) => {
+    //   state.orderLoading = true;
+    //   state.orderError = null;
+    // })
+
+    // .addCase(updateOrderStatus.fulfilled, (state, action) => {
+    //   state.orderLoading = false;
+
+    //   if (action.payload.data) {
+    //     state.selectedOrder = action.payload.data;
+
+    //     const index = state.orders.findIndex(
+    //       (order) => order._id === action.payload.data?._id,
+    //     );
+
+    //     if (index !== -1) {
+    //       state.orders[index] = action.payload.data;
+    //     }
+    //   }
+    // })
+
+    // .addCase(updateOrderStatus.rejected, (state, action) => {
+    //   state.orderLoading = false;
+
+    //   state.orderError = action.payload || "Failed to update order status";
+    // });
   },
 });
 

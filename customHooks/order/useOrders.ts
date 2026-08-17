@@ -8,7 +8,7 @@ import {
   fetchMyOrders,
   fetchOrderDetails,
   cancelOrder,
-  updateOrderStatus,
+  // updateOrderStatus,
 } from "@/redux/slice/order/order";
 
 import {

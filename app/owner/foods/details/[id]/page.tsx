@@ -1,10 +1,10 @@
-import CartPage from '@/componets/cart/Cart'
+import FoodDetailsPage from '@/componets/owner/food/details/FoodDetails'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-        <CartPage/>
+        <FoodDetailsPage/>
     </div>
   )
 }

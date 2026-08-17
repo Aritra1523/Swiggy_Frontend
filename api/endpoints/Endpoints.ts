@@ -19,13 +19,26 @@ export const endpoints = {
 
   cancelOrder: (id: string) => `/orders/${id}/cancel`,
 
-  updateOrderStatus: (id: string) => `/orders/${id}/status`,
+  // updateOrderStatus: (id: string) => `/orders/${id}/status`,
 
   //Partner
   applyRestaurat: "/auth/apply/restaurant",
   restaruntOtp: "/restaurant/otp",
   restaruntDetails: "/restaurant/details",
   restaruntDocument: "/restaurant/documents",
-  addFood: "/add-food",
   partnerCOntract: "/partner-contract",
+
+  
+  //OWNER
+
+  restaurantDetails: "/restaurant/details",
+  myRestaurant: "/my-restaurant",
+  restaurantfoodDetails:(id: string)=> `/food/details/${id}`,
+
+  foodlistOwner: "/food/list",
+  addFood: "/add-food",
+  editFood:(id: string)=> `/food/edit/${id}`,
+  deleteFood: (id: string)=>`/food/${id}`,
+ 
+  toggleAvailability:(id: string)=> `/${id}/toggle-availability`,
 };

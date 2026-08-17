@@ -1,10 +1,10 @@
-import CartPage from '@/componets/cart/Cart'
+import OrdersPage from '@/componets/orders/OrdersPage'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-        <CartPage/>
+        <OrdersPage/>
     </div>
   )
 }

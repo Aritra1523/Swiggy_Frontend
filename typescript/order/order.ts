@@ -109,3 +109,21 @@ export interface CancelOrderResponse {
 export interface UpdateOrderStatusPayload {
   status: string;
 }
+
+
+// export interface OrderRestaurant {
+//   _id: string;
+//   restaurantName?: string;
+//   location?: string;
+// }
+// export interface Order {
+//   _id: string;
+//   user: string;
+//   restaurant: OrderRestaurant;
+//   items: OrderItem[];
+//   totalAmount: number;
+//   address: string;
+//   status: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }

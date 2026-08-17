@@ -1,10 +1,10 @@
-import CartPage from '@/componets/cart/Cart'
+import EditFoodPage from '@/componets/owner/food/edit/EditFoood'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-        <CartPage/>
+        <EditFoodPage/>
     </div>
   )
 }
