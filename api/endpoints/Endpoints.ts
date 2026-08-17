@@ -28,17 +28,18 @@ export const endpoints = {
   restaruntDocument: "/restaurant/documents",
   partnerCOntract: "/partner-contract",
 
-  
   //OWNER
 
   restaurantDetails: "/restaurant/details",
   myRestaurant: "/my-restaurant",
-  restaurantfoodDetails:(id: string)=> `/food/details/${id}`,
+  restaurantfoodDetails: (id: string) => `/food/details/${id}`,
 
   foodlistOwner: "/food/list",
   addFood: "/add-food",
-  editFood:(id: string)=> `/food/edit/${id}`,
-  deleteFood: (id: string)=>`/food/${id}`,
- 
-  toggleAvailability:(id: string)=> `/${id}/toggle-availability`,
+  editFood: (id: string) => `/food/edit/${id}`,
+  deleteFood: (id: string) => `/food/${id}`,
+  // NOTE: guessed path — swap for whatever your owner-order-list route actually is
+  ownerOrders: "/owner/orders",
+  toggleAvailability: (id: string) => `/${id}/toggle-availability`,
+  updateOrderStatus: (id: string) => `/orders/${id}/status`,
 };

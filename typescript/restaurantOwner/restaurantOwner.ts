@@ -352,3 +352,41 @@ export interface ToggleAvailabilityResponse {
   message: string;
   data: OwnerFood;
 }
+
+// --- Owner-side order types ---
+
+export interface OwnerOrderItem {
+  food: { _id: string; itemName: string; price?: number };
+  quantity: number;
+  price?: number;
+}
+
+export interface OwnerOrder {
+  _id: string;
+  user: string;
+  restaurant: { _id: string; name: string };
+  items: OwnerOrderItem[];
+  totalAmount: number;
+  status:
+    | "placed"
+    | "confirmed"
+    | "preparing"
+    | "out_for_delivery"
+    | "delivered"
+    | "cancelled";
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface OwnerOrderListResponse {
+  success?: boolean;
+  status?: boolean;
+  message?: string;
+  data: OwnerOrder[];
+}
+
+export interface UpdateOrderStatusResponse {
+  status: boolean;
+  message: string;
+  data: OwnerOrder;
+}

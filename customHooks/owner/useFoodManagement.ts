@@ -11,6 +11,9 @@ import {
   MyRestaurantResponse,
   DeleteFoodResponse,
   ToggleAvailabilityResponse,
+  OwnerOrderListResponse,
+  OwnerOrder,
+  UpdateOrderStatusResponse,
 } from "@/typescript/restaurantOwner/restaurantOwner";
 
 // Query keys centralized so mutations can invalidate precisely
@@ -39,9 +42,7 @@ function toFormData(payload: AddFoodPayload | EditFoodPayload): FormData {
   return formData;
 }
 
-
 // GET /my-restaurant
-
 
 export function useMyRestaurant() {
   return useQuery({
@@ -55,9 +56,7 @@ export function useMyRestaurant() {
   });
 }
 
-
 // GET /food/list
-
 
 export function useFoodList(page = 1, limit = 10) {
   return useQuery({
@@ -72,9 +71,7 @@ export function useFoodList(page = 1, limit = 10) {
   });
 }
 
-
 // GET /food/details/:id
-
 
 export function useFoodDetails(id: string | undefined) {
   return useQuery({
@@ -89,9 +86,7 @@ export function useFoodDetails(id: string | undefined) {
   });
 }
 
-
 // POST /add-food
-
 
 export function useAddFood() {
   const queryClient = useQueryClient();
@@ -112,9 +107,7 @@ export function useAddFood() {
   });
 }
 
-
 // POST /food/edit/:id
-
 
 export function useEditFood() {
   const queryClient = useQueryClient();
@@ -141,9 +134,7 @@ export function useEditFood() {
   });
 }
 
-
 // DELETE /food/:id
-
 
 export function useDeleteFood() {
   const queryClient = useQueryClient();
@@ -161,9 +152,7 @@ export function useDeleteFood() {
   });
 }
 
-
 // PATCH /:id/toggle-availability
-
 
 export function useToggleAvailability() {
   const queryClient = useQueryClient();
@@ -200,6 +189,77 @@ export function useToggleAvailability() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ownerKeys.foods });
+    },
+  });
+}
+
+export const ownerOrderKeys = {
+  orders: ["owner", "orders"] as const,
+  order: (id: string) => ["owner", "orders", id] as const,
+};
+
+export function useOwnerOrders(page = 1, limit = 10) {
+  return useQuery({
+    queryKey: [...ownerOrderKeys.orders, page, limit],
+    queryFn: async () => {
+      const response = await axiosInstance.get<OwnerOrderListResponse>(
+        endpoints.ownerOrders,
+        { params: { page, limit } },
+      );
+      return response.data; // { success, pagination, data: OwnerOrder[] }
+    },
+  });
+}
+
+export function useUpdateOrderStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const response = await axiosInstance.put<UpdateOrderStatusResponse>(
+        endpoints.updateOrderStatus(id),
+        { status },
+      );
+      return response.data;
+    },
+    // Optimistic update — flips the status immediately in the cached list,
+    // since waiting for the round trip makes the action feel laggy.
+    onMutate: async ({ id, status }: { id: string; status: string }) => {
+      await queryClient.cancelQueries({ queryKey: ownerOrderKeys.orders });
+
+      const previousOrders = queryClient.getQueryData<OwnerOrderListResponse>(
+        ownerOrderKeys.orders,
+      );
+
+      queryClient.setQueryData<OwnerOrderListResponse>(
+        ownerOrderKeys.orders,
+        (old) =>
+          old
+            ? {
+                ...old,
+                data: old.data.map((order) =>
+                  order._id === id
+                    ? { ...order, status: status as OwnerOrder["status"] }
+                    : order,
+                ),
+              }
+            : old,
+      );
+
+      return { previousOrders };
+    },
+    onError: (_err, _vars, context) => {
+      // Roll back if the request actually failed (invalid transition,
+      // already completed, not the owner's order, etc.)
+      if (context?.previousOrders) {
+        queryClient.setQueryData(ownerOrderKeys.orders, context.previousOrders);
+      }
+    },
+    onSettled: (_data, _err, variables) => {
+      queryClient.invalidateQueries({ queryKey: ownerOrderKeys.orders });
+      queryClient.invalidateQueries({
+        queryKey: ownerOrderKeys.order(variables.id),
+      });
     },
   });
 }
