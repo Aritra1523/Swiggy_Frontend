@@ -156,19 +156,19 @@ const authSlice = createSlice({
         state.error = null;
       })
 
-      .addCase(verifyOtp.fulfilled, (state, action) => {
+      .addCase(verifyOtp.fulfilled, (state, {payload}) => {
         state.loading = false;
         state.error = null;
 
         // Set user data and tokens from OTP response
-        if (action.payload?.data) {
-          state.user = action.payload.data;
+        if (payload?.data) {
+          state.user = payload.data;
         }
-        if (action.payload?.accessToken) {
-          state.accessToken = action.payload.accessToken;
+        if (payload?.accessToken) {
+          state.accessToken = payload.accessToken;
         }
-        if (action.payload?.refreshToken) {
-          state.refreshToken = action.payload.refreshToken;
+        if (payload?.refreshToken) {
+          state.refreshToken = payload.refreshToken;
         }
       })
 

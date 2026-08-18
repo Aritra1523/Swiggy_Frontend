@@ -39,7 +39,9 @@ export const endpoints = {
   editFood: (id: string) => `/food/edit/${id}`,
   deleteFood: (id: string) => `/food/${id}`,
   // NOTE: guessed path — swap for whatever your owner-order-list route actually is
-  ownerOrders: "/owner/orders",
+  ownerOrders: "/restaurant/orders",
   toggleAvailability: (id: string) => `/${id}/toggle-availability`,
   updateOrderStatus: (id: string) => `/orders/${id}/status`,
+  restaurantStatus: "/restaurant/status",
+
 };

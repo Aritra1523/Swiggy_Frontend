@@ -142,8 +142,8 @@ const partnerSlice = createSlice({
   initialState,
 
   reducers: {
-    setRestaurantEmail: (state, action) => {
-      state.restaurantEmail = action.payload;
+    setRestaurantEmail: (state,{payload} ) => {
+      state.restaurantEmail = payload;
     },
 
     clearPartnerState: (state) => {
@@ -167,9 +167,9 @@ const partnerSlice = createSlice({
         state.loading = false;
       })
 
-      .addCase(applyRestaurant.rejected, (state, action) => {
+      .addCase(applyRestaurant.rejected, (state, {payload}) => {
         state.loading = false;
-        state.error = action.payload ?? "Failed";
+        state.error = payload ?? "Failed";
       })
 
       /* Verify OTP */
@@ -183,9 +183,9 @@ const partnerSlice = createSlice({
         state.loading = false;
       })
 
-      .addCase(verifyRestaurantOtp.rejected, (state, action) => {
+      .addCase(verifyRestaurantOtp.rejected, (state, {payload}) => {
         state.loading = false;
-        state.error = action.payload ?? "OTP Failed";
+        state.error = payload ?? "OTP Failed";
       })
       //Add Restaurant Details
       .addCase(addRestaurantDetails.pending, (state) => {
@@ -197,9 +197,9 @@ const partnerSlice = createSlice({
         state.loading = false;
       })
 
-      .addCase(addRestaurantDetails.rejected, (state, action) => {
+      .addCase(addRestaurantDetails.rejected, (state, {payload}) => {
         state.loading = false;
-        state.error = action.payload ?? "Failed";
+        state.error = payload ?? "Failed";
       })
       //Add Documents
       .addCase(addRestaurantDocuments.pending, (state) => {
@@ -211,9 +211,9 @@ const partnerSlice = createSlice({
         state.loading = false;
       })
 
-      .addCase(addRestaurantDocuments.rejected, (state, action) => {
+      .addCase(addRestaurantDocuments.rejected, (state, {payload}) => {
         state.loading = false;
-        state.error = action.payload ?? "Failed";
+        state.error = payload ?? "Failed";
       })
       //PartnerContract
       .addCase(submitPartnerContract.pending, (state) => {
@@ -225,9 +225,9 @@ const partnerSlice = createSlice({
         state.loading = false;
       })
 
-      .addCase(submitPartnerContract.rejected, (state, action) => {
+      .addCase(submitPartnerContract.rejected, (state, {payload}) => {
         state.loading = false;
-        state.error = action.payload ?? "Failed";
+        state.error = payload ?? "Failed";
       });
   },
 });

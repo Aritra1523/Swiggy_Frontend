@@ -390,3 +390,17 @@ export interface UpdateOrderStatusResponse {
   message: string;
   data: OwnerOrder;
 }
+
+export interface RestaurantStatusPayload {
+  isOpen: boolean;
+}
+
+export interface RestaurantStatusResponse {
+  success: boolean;
+  message: string;
+  data: {
+    _id: string;
+    restaurantName: string;
+    isOpen: boolean;
+  };
+}

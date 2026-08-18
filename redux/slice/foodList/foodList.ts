@@ -4,8 +4,6 @@ import axiosInstance from "@/api/baseUrl/Api";
 import { endpoints } from "@/api/endpoints/Endpoints";
 import { Food, FoodListResponse } from "@/typescript/foodListType/type";
 
-
-
 interface FoodState {
   foods: Food[];
   loading: boolean;
@@ -22,24 +20,19 @@ export const fetchFoodList = createAsyncThunk<
   FoodListResponse,
   void,
   { rejectValue: string }
->(
-  "food/fetchFoodList",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response =
-        await axiosInstance.get<FoodListResponse>(
-          endpoints.foodList,
-        );
+>("food/fetchFoodList", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.get<FoodListResponse>(
+      endpoints.foodList,
+    );
 
-      return response.data;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message ||
-          "Failed to fetch food list",
-      );
-    }
-  },
-);
+    return response.data;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to fetch food list",
+    );
+  }
+});
 
 const foodSlice = createSlice({
   name: "food",
@@ -61,30 +54,21 @@ const foodSlice = createSlice({
         state.error = null;
       })
 
-      .addCase(
-        fetchFoodList.fulfilled,
-        (state, action) => {
-          state.loading = false;
-          state.error = null;
+      .addCase(fetchFoodList.fulfilled, (state, {payload}) => {
+        state.loading = false;
+        state.error = null;
 
-          state.foods = action.payload.data;
-        },
-      )
+        state.foods = payload.data;
+      })
 
-      .addCase(
-        fetchFoodList.rejected,
-        (state, action) => {
-          state.loading = false;
+      .addCase(fetchFoodList.rejected, (state, {payload}) => {
+        state.loading = false;
 
-          state.error =
-            action.payload ||
-            "Failed to fetch food list";
-        },
-      );
+        state.error = payload || "Failed to fetch food list";
+      });
   },
 });
 
-export const { clearFoodError } =
-  foodSlice.actions;
+export const { clearFoodError } = foodSlice.actions;
 
 export default foodSlice.reducer;

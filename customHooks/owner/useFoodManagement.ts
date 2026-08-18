@@ -14,6 +14,8 @@ import {
   OwnerOrderListResponse,
   OwnerOrder,
   UpdateOrderStatusResponse,
+  RestaurantStatusPayload,
+  RestaurantStatusResponse,
 } from "@/typescript/restaurantOwner/restaurantOwner";
 
 // Query keys centralized so mutations can invalidate precisely
@@ -198,15 +200,15 @@ export const ownerOrderKeys = {
   order: (id: string) => ["owner", "orders", id] as const,
 };
 
-export function useOwnerOrders(page = 1, limit = 10) {
+export function useOwnerOrders() {
   return useQuery({
-    queryKey: [...ownerOrderKeys.orders, page, limit],
+    queryKey: ownerOrderKeys.orders,
     queryFn: async () => {
       const response = await axiosInstance.get<OwnerOrderListResponse>(
         endpoints.ownerOrders,
-        { params: { page, limit } },
       );
-      return response.data; // { success, pagination, data: OwnerOrder[] }
+
+      return response.data;
     },
   });
 }
@@ -263,3 +265,39 @@ export function useUpdateOrderStatus() {
     },
   });
 }
+
+const updateRestaurantStatus = async (
+  data: RestaurantStatusPayload,
+): Promise<RestaurantStatusResponse> => {
+  const response = await axiosInstance.put<RestaurantStatusResponse>(
+    endpoints.restaurantStatus,
+    data,
+  );
+
+  return response.data;
+};
+
+export const useRestaurantStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateRestaurantStatus,
+
+    onSuccess: (response) => {
+      console.log("Restaurant status updated:", response);
+
+      // Refresh restaurant information
+      queryClient.invalidateQueries({
+        queryKey: ["restaurant"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["restaurantStatus"],
+      });
+    },
+
+    onError: (error) => {
+      console.error("Restaurant status update failed:", error);
+    },
+  });
+};

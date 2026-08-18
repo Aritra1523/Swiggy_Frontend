@@ -9,6 +9,7 @@ import { OrderSummary } from "./OrderSummary";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { EmptyCart } from "./EmptyCart";
 import { CartList } from "./CartList";
+import Swal from "sweetalert2";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -32,16 +33,42 @@ export default function CheckoutPage() {
       return;
     }
 
-    try {
-      setPlacingOrder(true);
-      await handlePlaceOrder({ address: trimmedAddress });
-      // Toast notification would go here
-      router.push("/Order");
-    } catch (error) {
-      alert(error?.message || "Failed to place order");
-    } finally {
-      setPlacingOrder(false);
-    }
+   // First, confirm with user
+const result = await Swal.fire({
+  title: 'Confirm Order',
+  text: 'Are you sure you want to place this order?',
+  icon: 'question',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Yes, Place Order!',
+  cancelButtonText: 'Cancel'
+});
+
+if (result.isConfirmed) {
+  try {
+    setPlacingOrder(true);
+    await handlePlaceOrder({ address: trimmedAddress });
+    
+    await Swal.fire({
+      icon: 'success',
+      title: 'Order Placed!',
+      text: 'Your order has been successfully placed.',
+      timer: 1500,
+      showConfirmButton: false
+    });
+    
+    router.push("/Order");
+  } catch (error) {
+    await Swal.fire({
+      icon: 'error',
+      title: 'Order Failed',
+      text: error?.message || "Failed to place order"
+    });
+  } finally {
+    setPlacingOrder(false);
+  }
+}
   };
 
   if (cartLoading) return <LoadingSpinner />;

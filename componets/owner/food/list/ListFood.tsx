@@ -66,19 +66,25 @@ const StatusBadge = ({ isAvailable }: { isAvailable: boolean }) => (
   </span>
 );
 
-const ApprovalBadge = ({ status }: { status: string }) => {
+// ============== FIXED: ApprovalBadge ==============
+const ApprovalBadge = ({ status }: { status?: string }) => {
+  // Safely handle undefined/null status
+  const safeStatus = status?.toLowerCase() || "pending";
+  
   const config = {
     approved: { icon: CheckCircle2, color: "text-green-700 bg-green-50 border-green-200" },
     pending: { icon: Hourglass, color: "text-yellow-700 bg-yellow-50 border-yellow-200" },
     rejected: { icon: XCircle, color: "text-red-700 bg-red-50 border-red-200" },
   };
   
-  const { icon: Icon, color } = config[status as keyof typeof config] || config.pending;
+  // Get config or default to pending
+  const statusConfig = config[safeStatus as keyof typeof config] || config.pending;
+  const { icon: Icon, color } = statusConfig;
   
   return (
     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${color}`}>
       <Icon className="w-3 h-3" />
-      {status.charAt(0).toUpperCase() + status.slice(1)}
+      {safeStatus.charAt(0).toUpperCase() + safeStatus.slice(1)}
     </span>
   );
 };
@@ -182,7 +188,7 @@ const FoodCardSkeleton = () => (
   </div>
 );
 
-// Food Card Component
+// ============== FIXED: Food Card Component ==============
 const FoodCard = ({
   food,
   viewMode,
@@ -195,6 +201,9 @@ const FoodCard = ({
   onDelete: (id: string) => void;
 }) => {
   const [showActions, setShowActions] = useState(false);
+  
+  // Ensure approvalStatus has a default value
+  const approvalStatus = food.approvalStatus || "pending";
 
   return (
     <div
@@ -222,15 +231,14 @@ const FoodCard = ({
         )}
 
         {viewMode === "grid" && (
-          <div className="absolute top-2 left-2">
-            <StatusBadge isAvailable={food.isAvailable} />
-          </div>
-        )}
-        
-        {viewMode === "grid" && (
-          <div className="absolute top-2 right-2">
-            <ApprovalBadge status={food.approvalStatus} />
-          </div>
+          <>
+            <div className="absolute top-2 left-2">
+              <StatusBadge isAvailable={food.isAvailable} />
+            </div>
+            <div className="absolute top-2 right-2">
+              <ApprovalBadge status={approvalStatus} />
+            </div>
+          </>
         )}
       </div>
 
@@ -258,7 +266,7 @@ const FoodCard = ({
 
           {viewMode === "list" && (
             <div className="flex items-center gap-2 ml-2">
-              <ApprovalBadge status={food.approvalStatus} />
+              <ApprovalBadge status={approvalStatus} />
               <StatusBadge isAvailable={food.isAvailable} />
             </div>
           )}
