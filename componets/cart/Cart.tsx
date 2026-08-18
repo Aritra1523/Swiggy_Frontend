@@ -171,7 +171,7 @@ export default function CartPage() {
 
     // Redirect to checkout page after a small delay for better UX
     setTimeout(() => {
-      router.push("/CheckOutPage");
+      router.push("/checkoutpage");
     }, 600);
   };
 

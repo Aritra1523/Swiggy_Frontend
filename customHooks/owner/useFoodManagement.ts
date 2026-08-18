@@ -269,7 +269,7 @@ export function useUpdateOrderStatus() {
 const updateRestaurantStatus = async (
   data: RestaurantStatusPayload,
 ): Promise<RestaurantStatusResponse> => {
-  const response = await axiosInstance.put<RestaurantStatusResponse>(
+  const response = await axiosInstance.patch<RestaurantStatusResponse>(
     endpoints.restaurantStatus,
     data,
   );
