@@ -317,9 +317,9 @@ export default function CartPage() {
                               >
                                 <Minus className="w-4 h-4 text-gray-600" />
                               </button>
-                              <span className="font-semibold w-6 text-center">
-                                {item.quantity}
-                              </span>
+                             <span className="font-semibold w-6 text-center text-black">
+  {item.quantity}
+</span>
                               <button
                                 onClick={() =>
                                   handleIncrementCartItem(food._id)
@@ -368,10 +368,10 @@ export default function CartPage() {
           <div className="lg:col-span-1">
             <div className="sticky top-24">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-                <h2 className="text-xl font-bold mb-5 flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-orange-500" />
-                  Bill Details
-                </h2>
+               <h2 className="text-xl font-bold mb-5 flex items-center gap-2 text-gray-800">
+  <CreditCard className="w-5 h-5 text-orange-500" />
+  Bill Details
+</h2>
 
                 <div className="space-y-3">
                   <div className="flex justify-between text-gray-600">
@@ -414,10 +414,10 @@ export default function CartPage() {
                 </div>
 
                 <div className="border-t pt-4 mt-4">
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Grand Total</span>
-                    <span className="text-orange-500">₹{grandTotal}</span>
-                  </div>
+                <div className="flex justify-between text-lg font-bold">
+  <span className="text-black">Grand Total</span>
+  <span className="text-orange-500">₹{grandTotal}</span>
+</div>
                   <p className="text-xs text-gray-400 mt-1">
                     Inclusive of all taxes and charges
                   </p>

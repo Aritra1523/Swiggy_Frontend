@@ -42,6 +42,7 @@ import {
 
 import {
   useFoodList,
+  usePendingFoodCount,
   useToggleAvailability,
 } from "@/customHooks/owner/useFoodManagement";
 
@@ -70,19 +71,28 @@ const StatusBadge = ({ isAvailable }: { isAvailable: boolean }) => (
 const ApprovalBadge = ({ status }: { status?: string }) => {
   // Safely handle undefined/null status
   const safeStatus = status?.toLowerCase() || "pending";
-  
+
   const config = {
-    approved: { icon: CheckCircle2, color: "text-green-700 bg-green-50 border-green-200" },
-    pending: { icon: Hourglass, color: "text-yellow-700 bg-yellow-50 border-yellow-200" },
+    approved: {
+      icon: CheckCircle2,
+      color: "text-green-700 bg-green-50 border-green-200",
+    },
+    pending: {
+      icon: Hourglass,
+      color: "text-yellow-700 bg-yellow-50 border-yellow-200",
+    },
     rejected: { icon: XCircle, color: "text-red-700 bg-red-50 border-red-200" },
   };
-  
+
   // Get config or default to pending
-  const statusConfig = config[safeStatus as keyof typeof config] || config.pending;
+  const statusConfig =
+    config[safeStatus as keyof typeof config] || config.pending;
   const { icon: Icon, color } = statusConfig;
-  
+
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${color}`}>
+    <span
+      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${color}`}
+    >
       <Icon className="w-3 h-3" />
       {safeStatus.charAt(0).toUpperCase() + safeStatus.slice(1)}
     </span>
@@ -96,15 +106,25 @@ const CategoryChip = ({ category }: { category: string }) => (
   </span>
 );
 
-const PriceDisplay = ({ basePrice, discountPrice }: { basePrice: number; discountPrice: number }) => {
+const PriceDisplay = ({
+  basePrice,
+  discountPrice,
+}: {
+  basePrice: number;
+  discountPrice: number;
+}) => {
   const hasDiscount = discountPrice > 0 && discountPrice < basePrice;
 
   return (
     <div className="flex items-center gap-2">
       {hasDiscount ? (
         <>
-          <span className="text-sm font-bold text-gray-900">₹{discountPrice}</span>
-          <span className="text-xs text-gray-400 line-through">₹{basePrice}</span>
+          <span className="text-sm font-bold text-gray-900">
+            ₹{discountPrice}
+          </span>
+          <span className="text-xs text-gray-400 line-through">
+            ₹{basePrice}
+          </span>
           <span className="text-xs font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
             {Math.round(((basePrice - discountPrice) / basePrice) * 100)}% OFF
           </span>
@@ -116,61 +136,233 @@ const PriceDisplay = ({ basePrice, discountPrice }: { basePrice: number; discoun
   );
 };
 
-// Stat Card Component
+// ============== ENHANCED Stat Card Component ==============
 const StatCard = ({
   label,
   value,
   icon: Icon,
   tone,
+  subtitle,
   change,
+  onClick,
+  isActive,
+  isLoading,
 }: {
   label: string;
   value: number;
   icon: React.ElementType;
   tone: "gray" | "green" | "yellow" | "red" | "blue" | "purple";
+  subtitle?: string;
   change?: { value: number; positive: boolean };
+  onClick?: () => void;
+  isActive?: boolean;
+  isLoading?: boolean;
 }) => {
-  const toneClasses = {
-    gray: "bg-gray-50 text-gray-600",
-    green: "bg-green-50 text-green-600",
-    yellow: "bg-yellow-50 text-yellow-600",
-    red: "bg-red-50 text-red-600",
-    blue: "bg-blue-50 text-blue-600",
-    purple: "bg-purple-50 text-purple-600",
+  const [isHovered, setIsHovered] = useState(false);
+
+  const toneConfig = {
+    gray: {
+      bg: "bg-gray-50",
+      text: "text-gray-600",
+      border: "border-gray-200",
+      hoverBorder: "hover:border-gray-400",
+      hoverBg: "hover:bg-gray-100",
+      iconBg: "bg-gray-100",
+      shadow: "hover:shadow-gray-200/50",
+      gradient: "from-gray-50 to-gray-100",
+      activeBorder: "border-gray-500",
+      activeBg: "bg-gray-100",
+    },
+    green: {
+      bg: "bg-green-50",
+      text: "text-green-600",
+      border: "border-green-200",
+      hoverBorder: "hover:border-green-400",
+      hoverBg: "hover:bg-green-100",
+      iconBg: "bg-green-100",
+      shadow: "hover:shadow-green-200/50",
+      gradient: "from-green-50 to-emerald-50",
+      activeBorder: "border-green-500",
+      activeBg: "bg-green-100",
+    },
+    yellow: {
+      bg: "bg-yellow-50",
+      text: "text-yellow-600",
+      border: "border-yellow-200",
+      hoverBorder: "hover:border-yellow-400",
+      hoverBg: "hover:bg-yellow-100",
+      iconBg: "bg-yellow-100",
+      shadow: "hover:shadow-yellow-200/50",
+      gradient: "from-yellow-50 to-amber-50",
+      activeBorder: "border-yellow-500",
+      activeBg: "bg-yellow-100",
+    },
+    red: {
+      bg: "bg-red-50",
+      text: "text-red-600",
+      border: "border-red-200",
+      hoverBorder: "hover:border-red-400",
+      hoverBg: "hover:bg-red-100",
+      iconBg: "bg-red-100",
+      shadow: "hover:shadow-red-200/50",
+      gradient: "from-red-50 to-rose-50",
+      activeBorder: "border-red-500",
+      activeBg: "bg-red-100",
+    },
+    blue: {
+      bg: "bg-blue-50",
+      text: "text-blue-600",
+      border: "border-blue-200",
+      hoverBorder: "hover:border-blue-400",
+      hoverBg: "hover:bg-blue-100",
+      iconBg: "bg-blue-100",
+      shadow: "hover:shadow-blue-200/50",
+      gradient: "from-blue-50 to-indigo-50",
+      activeBorder: "border-blue-500",
+      activeBg: "bg-blue-100",
+    },
+    purple: {
+      bg: "bg-purple-50",
+      text: "text-purple-600",
+      border: "border-purple-200",
+      hoverBorder: "hover:border-purple-400",
+      hoverBg: "hover:bg-purple-100",
+      iconBg: "bg-purple-100",
+      shadow: "hover:shadow-purple-200/50",
+      gradient: "from-purple-50 to-violet-50",
+      activeBorder: "border-purple-500",
+      activeBg: "bg-purple-100",
+    },
   }[tone];
 
-  const borderColors = {
-    gray: "hover:border-gray-300",
-    green: "hover:border-green-300",
-    yellow: "hover:border-yellow-300",
-    red: "hover:border-red-300",
-    blue: "hover:border-blue-300",
-    purple: "hover:border-purple-300",
+  const iconColors = {
+    gray: "text-gray-500",
+    green: "text-green-500",
+    yellow: "text-yellow-500",
+    red: "text-red-500",
+    blue: "text-blue-500",
+    purple: "text-purple-500",
   }[tone];
+
+  const gradientBg = `bg-gradient-to-br ${toneConfig.gradient}`;
 
   return (
-    <div className={`bg-white rounded-2xl border border-gray-100 shadow-sm p-4 transition-all hover:shadow-md ${borderColors}`}>
-      <div className="flex items-start justify-between">
-        <div className="min-w-0">
-          <p className="text-xs text-gray-500 truncate">{label}</p>
-          <p className="text-xl font-bold text-gray-900 mt-0.5">{value}</p>
-        </div>
-        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${toneClasses}`}>
-          <Icon className="w-4 h-4" />
-        </div>
+    <div
+      className={`
+        relative overflow-hidden
+        bg-white rounded-2xl border-2 
+        ${isActive ? toneConfig.activeBorder : toneConfig.border}
+        ${isActive ? toneConfig.activeBg : ""}
+        p-5 transition-all duration-300 ease-in-out
+        ${toneConfig.hoverBorder}
+        ${toneConfig.shadow}
+        hover:shadow-xl
+        hover:-translate-y-1
+        ${onClick ? "cursor-pointer" : "cursor-default"}
+        group
+      `}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
+    >
+      {/* Animated Background Gradient */}
+      <div
+        className={`
+          absolute inset-0 opacity-0 group-hover:opacity-100
+          transition-opacity duration-500 ease-in-out
+          ${gradientBg}
+        `}
+      />
+
+      {/* Subtle Pattern Overlay */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,_currentColor_1px,_transparent_1px)] [background-size:16px_16px]" />
       </div>
-      {change && (
-        <div className="flex items-center gap-1 mt-2">
-          <span
-            className={`text-xs font-semibold ${
-              change.positive ? "text-green-600" : "text-red-600"
-            }`}
-          >
-            {change.positive ? "↑" : "↓"} {Math.abs(change.value)}%
-          </span>
-          <span className="text-xs text-gray-400">vs last week</span>
+
+      {/* Active Indicator */}
+      {isActive && (
+        <div className="absolute top-2 right-2">
+          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
         </div>
       )}
+
+      <div className="relative z-10">
+        <div className="flex items-start justify-between">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider truncate group-hover:text-gray-700 transition-colors duration-300">
+              {label}
+            </p>
+            <div className="flex items-baseline gap-2 mt-1">
+              {isLoading ? (
+                <div className="h-8 w-16 bg-gray-200 rounded animate-pulse" />
+              ) : (
+                <p className="text-2xl font-bold text-gray-900 group-hover:text-gray-800 transition-colors duration-300">
+                  {value}
+                </p>
+              )}
+              {change && !isLoading && (
+                <span
+                  className={`text-xs font-semibold flex items-center gap-0.5 ${
+                    change.positive ? "text-green-600" : "text-red-600"
+                  }`}
+                >
+                  {change.positive ? "↑" : "↓"} {Math.abs(change.value)}%
+                </span>
+              )}
+            </div>
+            {subtitle && (
+              <p className="text-xs text-gray-400 mt-1 group-hover:text-gray-500 transition-colors duration-300">
+                {subtitle}
+              </p>
+            )}
+          </div>
+
+          {/* Icon Container with Animation */}
+          <div
+            className={`
+              relative w-12 h-12 rounded-xl flex items-center justify-center shrink-0
+              ${toneConfig.iconBg}
+              group-hover:scale-110 group-hover:rotate-3
+              transition-all duration-300 ease-in-out
+              ${toneConfig.text}
+            `}
+          >
+            {/* Icon Pulsing Ring */}
+            <div
+              className={`
+                absolute inset-0 rounded-xl
+                ${toneConfig.text} opacity-0
+                group-hover:opacity-100
+                scale-0 group-hover:scale-150
+                transition-all duration-500 ease-in-out
+                border-2 border-current
+              `}
+            />
+            <Icon
+              className={`
+                w-5 h-5 relative z-10
+                ${iconColors}
+                group-hover:scale-110
+                transition-transform duration-300
+              `}
+            />
+          </div>
+        </div>
+
+        {/* Bottom Progress Bar */}
+        <div className="mt-3 h-1 bg-gray-100 rounded-full overflow-hidden">
+          <div
+            className={`
+              h-full rounded-full transition-all duration-700 ease-in-out
+              ${toneConfig.text}
+            `}
+            style={{
+              width: isHovered ? "100%" : isActive ? "100%" : "0%",
+              backgroundColor: "currentColor",
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 };
@@ -201,7 +393,7 @@ const FoodCard = ({
   onDelete: (id: string) => void;
 }) => {
   const [showActions, setShowActions] = useState(false);
-  
+
   // Ensure approvalStatus has a default value
   const approvalStatus = food.approvalStatus || "pending";
 
@@ -214,7 +406,9 @@ const FoodCard = ({
       onMouseLeave={() => setShowActions(false)}
     >
       {/* Image */}
-      <div className={`${viewMode === "grid" ? "w-full h-48 mb-4" : "w-16 h-16"} rounded-xl overflow-hidden bg-gray-100 shrink-0 relative`}>
+      <div
+        className={`${viewMode === "grid" ? "w-full h-48 mb-4" : "w-16 h-16"} rounded-xl overflow-hidden bg-gray-100 shrink-0 relative`}
+      >
         {food.image ? (
           <Image
             src={food.image}
@@ -243,7 +437,9 @@ const FoodCard = ({
       </div>
 
       {/* Food Info */}
-      <div className={`flex-1 min-w-0 ${viewMode === "grid" ? "space-y-2" : ""}`}>
+      <div
+        className={`flex-1 min-w-0 ${viewMode === "grid" ? "space-y-2" : ""}`}
+      >
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
@@ -287,7 +483,10 @@ const FoodCard = ({
           <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
             <div className="flex items-center gap-1 text-xs text-gray-500">
               <Clock className="w-3.5 h-3.5" />
-              <span>~{food.preparationTime || Math.floor(Math.random() * 20 + 10)} min</span>
+              <span>
+                ~{food.preparationTime || Math.floor(Math.random() * 20 + 10)}{" "}
+                min
+              </span>
             </div>
             <div className="flex items-center gap-1 text-xs text-gray-500">
               <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
@@ -302,7 +501,9 @@ const FoodCard = ({
       </div>
 
       {/* Actions */}
-      <div className={`flex items-center gap-1 shrink-0 ${viewMode === "grid" ? "mt-2 pt-2 border-t border-gray-100" : ""}`}>
+      <div
+        className={`flex items-center gap-1 shrink-0 ${viewMode === "grid" ? "mt-2 pt-2 border-t border-gray-100" : ""}`}
+      >
         {/* Toggle Availability */}
         <button
           onClick={() => onToggleAvailability(food._id)}
@@ -313,12 +514,16 @@ const FoodCard = ({
           }`}
           title={food.isAvailable ? "Mark unavailable" : "Mark available"}
         >
-          <div className={`relative w-8 h-4 rounded-full transition-colors ${
-            food.isAvailable ? "bg-green-500" : "bg-gray-300"
-          }`}>
-            <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white shadow-sm transition-transform ${
-              food.isAvailable ? "translate-x-[18px]" : "translate-x-0.5"
-            }`} />
+          <div
+            className={`relative w-8 h-4 rounded-full transition-colors ${
+              food.isAvailable ? "bg-green-500" : "bg-gray-300"
+            }`}
+          >
+            <div
+              className={`absolute top-0.5 w-3 h-3 rounded-full bg-white shadow-sm transition-transform ${
+                food.isAvailable ? "translate-x-[18px]" : "translate-x-0.5"
+              }`}
+            />
           </div>
         </button>
 
@@ -360,11 +565,17 @@ export default function OwnerFoodListPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<"name" | "price" | "createdAt">("createdAt");
+  const [sortBy, setSortBy] = useState<"name" | "price" | "createdAt">(
+    "createdAt",
+  );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [filterStatus, setFilterStatus] = useState<"all" | "available" | "unavailable">("all");
+  const [filterStatus, setFilterStatus] = useState<
+    "all" | "available" | "unavailable"
+  >("all");
   const [showFilters, setShowFilters] = useState(false);
+  const [activeStatFilter, setActiveStatFilter] = useState<string | null>(null);
 
+  // ====== FIXED: Hook calls moved inside component ======
   const {
     data: response,
     isLoading,
@@ -376,63 +587,74 @@ export default function OwnerFoodListPage() {
 
   const toggleAvailability = useToggleAvailability();
 
+  // ====== FIXED: Use the pending count hook properly ======
+  const { data: pendingCount = 0, isLoading: pendingCountLoading } =
+    usePendingFoodCount();
+
   const foods = response?.data;
   const pagination = response?.pagination;
   const stats = response?.stats;
+
+  // Calculate available count from foods data
+  const availableCount = useMemo(() => {
+    if (!foods) return 0;
+    return foods.filter((f) => f.isAvailable).length;
+  }, [foods]);
 
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Get unique categories
   const categories = useMemo(() => {
     if (!foods) return [];
-    return Array.from(new Set(foods.map(food => food.category)));
+    return Array.from(new Set(foods.map((food) => food.category)));
   }, [foods]);
 
   // Filter and sort foods
   const filteredFoods = useMemo(() => {
     if (!foods) return [];
-    
+
     let result = [...foods];
-    
+
     // Search filter
     if (searchQuery) {
-      result = result.filter(food => 
-        food.itemName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        food.category.toLowerCase().includes(searchQuery.toLowerCase())
+      result = result.filter(
+        (food) =>
+          food.itemName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          food.category.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
-    
+
     // Category filter
     if (filterCategory !== "all") {
-      result = result.filter(food => food.category === filterCategory);
+      result = result.filter((food) => food.category === filterCategory);
     }
-    
+
     // Status filter
     if (filterStatus === "available") {
-      result = result.filter(food => food.isAvailable);
+      result = result.filter((food) => food.isAvailable);
     } else if (filterStatus === "unavailable") {
-      result = result.filter(food => !food.isAvailable);
+      result = result.filter((food) => !food.isAvailable);
     }
-    
+
     // Sort
     result.sort((a, b) => {
       let compareA = a[sortBy];
       let compareB = b[sortBy];
-      
+
       if (sortBy === "price") {
         compareA = a.discountPrice || a.basePrice;
         compareB = b.discountPrice || b.basePrice;
       }
-      
+
       if (typeof compareA === "string") {
-        return sortOrder === "asc" 
+        return sortOrder === "asc"
           ? compareA.localeCompare(compareB)
           : compareB.localeCompare(compareA);
       }
-      
+
       return sortOrder === "asc" ? compareA - compareB : compareB - compareA;
     });
-    
+
     return result;
   }, [foods, searchQuery, filterCategory, filterStatus, sortBy, sortOrder]);
 
@@ -448,14 +670,35 @@ export default function OwnerFoodListPage() {
     return (
       <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6 md:p-10">
         <div className="max-w-6xl mx-auto space-y-4">
-          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-48 mb-4" />
-            <div className="grid grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-20 bg-gray-200 rounded-2xl" />
-              ))}
+          {/* Header Skeleton */}
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gray-200 rounded-2xl" />
+                <div>
+                  <div className="h-8 bg-gray-200 rounded w-48" />
+                  <div className="h-4 bg-gray-200 rounded w-32 mt-2" />
+                </div>
+              </div>
+              <div className="h-12 bg-gray-200 rounded-xl w-40" />
             </div>
           </div>
+          
+          {/* Stats Skeleton */}
+          <div className="grid grid-cols-3 gap-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-24 bg-white rounded-2xl border border-gray-100 p-5 animate-pulse">
+                <div className="h-4 bg-gray-200 rounded w-24" />
+                <div className="h-8 bg-gray-200 rounded w-12 mt-2" />
+              </div>
+            ))}
+          </div>
+          
+          {/* Search Skeleton */}
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+            <div className="h-12 bg-gray-200 rounded-xl" />
+          </div>
+          
           {[1, 2, 3, 4].map((i) => (
             <FoodCardSkeleton key={i} />
           ))}
@@ -471,9 +714,12 @@ export default function OwnerFoodListPage() {
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-red-500" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Unable to Load Menu</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Unable to Load Menu
+          </h3>
           <p className="text-gray-500 text-sm">
-            {(error as any)?.response?.data?.message || "Couldn't load your menu. Please try again."}
+            {(error as any)?.response?.data?.message ||
+              "Couldn't load your menu. Please try again."}
           </p>
           <div className="flex gap-3 justify-center mt-4">
             <button
@@ -497,7 +743,7 @@ export default function OwnerFoodListPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header Section */}
+        {/* ====== HEADER SECTION ====== */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
@@ -506,18 +752,23 @@ export default function OwnerFoodListPage() {
                   <Utensils className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Menu Management</h1>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    Menu Management
+                  </h1>
                   <p className="text-gray-500 text-sm flex items-center gap-2">
-                    <span>{pagination?.totalItems ?? filteredFoods?.length ?? 0} items</span>
+                    <span>
+                      {pagination?.totalItems ?? filteredFoods?.length ?? 0}{" "}
+                      items
+                    </span>
                     <span className="w-1 h-1 bg-gray-300 rounded-full" />
                     <span className="flex items-center gap-1">
                       <PackageCheck className="w-3.5 h-3.5 text-green-500" />
-                      {stats?.available || 0} available
+                      {availableCount || 0} available
                     </span>
                     <span className="w-1 h-1 bg-gray-300 rounded-full" />
                     <span className="flex items-center gap-1">
                       <Hourglass className="w-3.5 h-3.5 text-yellow-500" />
-                      {stats?.pending || 0} pending
+                      {pendingCount || 0} pending
                     </span>
                   </p>
                 </div>
@@ -531,7 +782,9 @@ export default function OwnerFoodListPage() {
                 className="p-2.5 bg-gray-50 hover:bg-gray-100 rounded-xl text-gray-600 transition-colors disabled:opacity-50"
                 title="Refresh"
               >
-                <RefreshCw className={`w-4 h-4 ${isFetching ? "animate-spin" : ""}`} />
+                <RefreshCw
+                  className={`w-4 h-4 ${isFetching ? "animate-spin" : ""}`}
+                />
               </button>
               <Link
                 href="/owner/foods/add"
@@ -542,9 +795,79 @@ export default function OwnerFoodListPage() {
               </Link>
             </div>
           </div>
+        </div>
 
-          {/* Search, Filters, and Actions */}
-          <div className="mt-4 flex flex-col lg:flex-row gap-3">
+        {/* ====== ENHANCED STAT CARDS WITH CLICK FILTERS ====== */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <StatCard
+            label="Total Items"
+            value={stats?.total || foods?.length || 0}
+            icon={Utensils}
+            tone="gray"
+            subtitle="All menu items"
+            change={{ value: 12, positive: true }}
+            isActive={activeStatFilter === "total"}
+            onClick={() => {
+              if (activeStatFilter === "total") {
+                setActiveStatFilter(null);
+                setFilterStatus("all");
+                setFilterCategory("all");
+                setSearchQuery("");
+              } else {
+                setActiveStatFilter("total");
+                setFilterStatus("all");
+                setFilterCategory("all");
+                setSearchQuery("");
+              }
+            }}
+          />
+          <StatCard
+            label="Available"
+            value={availableCount || 0}
+            icon={PackageCheck}
+            tone="green"
+            subtitle="Ready to serve"
+            change={{ value: 5, positive: true }}
+            isActive={activeStatFilter === "available"}
+            onClick={() => {
+              if (activeStatFilter === "available") {
+                setActiveStatFilter(null);
+                setFilterStatus("all");
+              } else {
+                setActiveStatFilter("available");
+                setFilterStatus("available");
+                setFilterCategory("all");
+                setSearchQuery("");
+              }
+            }}
+          />
+          <StatCard
+            label="Pending Approval"
+            value={pendingCount || 0}
+            icon={Hourglass}
+            tone="yellow"
+            subtitle="Awaiting review"
+            change={{ value: 3, positive: false }}
+            isActive={activeStatFilter === "pending"}
+            isLoading={pendingCountLoading}
+            onClick={() => {
+              if (activeStatFilter === "pending") {
+                setActiveStatFilter(null);
+                setFilterStatus("all");
+                setFilterCategory("all");
+              } else {
+                setActiveStatFilter("pending");
+                setFilterStatus("all");
+                setFilterCategory("all");
+                setSearchQuery("");
+              }
+            }}
+          />
+        </div>
+
+        {/* ====== SEARCH, FILTERS, AND ACTIONS ====== */}
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 mb-6">
+          <div className="flex flex-col lg:flex-row gap-3">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -552,7 +875,7 @@ export default function OwnerFoodListPage() {
                 placeholder="Search by name or category..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all text-gray-800"
               />
               {searchQuery && (
                 <button
@@ -568,7 +891,9 @@ export default function OwnerFoodListPage() {
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all ${
-                  showFilters || filterCategory !== "all" || filterStatus !== "all"
+                  showFilters ||
+                  filterCategory !== "all" ||
+                  filterStatus !== "all"
                     ? "bg-orange-50 border-orange-200 text-orange-600"
                     : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
                 }`}
@@ -583,7 +908,7 @@ export default function OwnerFoodListPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all text-sm"
+                className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all text-sm text-gray-800"
               >
                 <option value="name">Sort by Name</option>
                 <option value="price">Sort by Price</option>
@@ -591,7 +916,9 @@ export default function OwnerFoodListPage() {
               </select>
 
               <button
-                onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+                onClick={() =>
+                  setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+                }
                 className="p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
                 title={sortOrder === "asc" ? "Ascending" : "Descending"}
               >
@@ -634,7 +961,9 @@ export default function OwnerFoodListPage() {
             <div className="mt-3 pt-3 border-t border-gray-100">
               <div className="flex flex-wrap gap-3">
                 <div className="flex-1 min-w-[150px]">
-                  <label className="text-xs text-gray-500 font-medium block mb-1">Category</label>
+                  <label className="text-xs text-gray-500 font-medium block mb-1">
+                    Category
+                  </label>
                   <select
                     value={filterCategory}
                     onChange={(e) => setFilterCategory(e.target.value)}
@@ -642,12 +971,16 @@ export default function OwnerFoodListPage() {
                   >
                     <option value="all">All Categories</option>
                     {categories.map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div className="flex-1 min-w-[150px]">
-                  <label className="text-xs text-gray-500 font-medium block mb-1">Availability</label>
+                  <label className="text-xs text-gray-500 font-medium block mb-1">
+                    Availability
+                  </label>
                   <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value as any)}
@@ -664,6 +997,7 @@ export default function OwnerFoodListPage() {
                       setFilterCategory("all");
                       setFilterStatus("all");
                       setSearchQuery("");
+                      setActiveStatFilter(null);
                     }}
                     className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 font-medium transition-colors"
                   >
@@ -675,57 +1009,16 @@ export default function OwnerFoodListPage() {
           )}
         </div>
 
-        {/* Stats Row */}
-        {stats && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-            <StatCard
-              label="Total Items"
-              value={stats.total}
-              icon={Utensils}
-              tone="gray"
-            />
-            <StatCard
-              label="Available"
-              value={stats.available}
-              icon={PackageCheck}
-              tone="green"
-              change={{ value: 5, positive: true }}
-            />
-            <StatCard
-              label="Unavailable"
-              value={stats.total - stats.available}
-              icon={EyeOff}
-              tone="red"
-            />
-            <StatCard
-              label="Approved"
-              value={stats.approved}
-              icon={CheckCircle2}
-              tone="blue"
-            />
-            <StatCard
-              label="Pending"
-              value={stats.pending}
-              icon={Hourglass}
-              tone="yellow"
-            />
-            <StatCard
-              label="Rejected"
-              value={stats.rejected || 0}
-              icon={XCircle}
-              tone="red"
-            />
-          </div>
-        )}
-
-        {/* Food List */}
+        {/* ====== FOOD LIST ====== */}
         {!foods || foods.length === 0 ? (
           <div className="bg-white rounded-3xl border-2 border-dashed border-gray-300 p-16 text-center">
             <div className="max-w-sm mx-auto">
               <div className="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Utensils className="w-10 h-10 text-orange-400" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Your menu is empty</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Your menu is empty
+              </h3>
               <p className="text-gray-500 text-sm mb-6">
                 Start adding your delicious dishes to attract more customers
               </p>
@@ -742,15 +1035,19 @@ export default function OwnerFoodListPage() {
           <div className="bg-white rounded-3xl border border-gray-100 p-12 text-center">
             <div className="max-w-sm mx-auto">
               <Search className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No matching items</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                No matching items
+              </h3>
               <p className="text-gray-500 text-sm">
-                Try adjusting your search or filters to find what you're looking for.
+                Try adjusting your search or filters to find what you're looking
+                for.
               </p>
               <button
                 onClick={() => {
                   setSearchQuery("");
                   setFilterCategory("all");
                   setFilterStatus("all");
+                  setActiveStatFilter(null);
                 }}
                 className="mt-4 text-orange-600 font-medium hover:underline"
               >
@@ -763,8 +1060,15 @@ export default function OwnerFoodListPage() {
             {/* Results Count */}
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm text-gray-500">
-                Showing <span className="font-semibold text-gray-700">{filteredFoods.length}</span> of{" "}
-                <span className="font-semibold text-gray-700">{foods.length}</span> items
+                Showing{" "}
+                <span className="font-semibold text-gray-700">
+                  {filteredFoods.length}
+                </span>{" "}
+                of{" "}
+                <span className="font-semibold text-gray-700">
+                  {foods.length}
+                </span>{" "}
+                items
               </p>
               {isFetching && (
                 <span className="text-xs text-gray-400 flex items-center gap-1">
@@ -775,10 +1079,13 @@ export default function OwnerFoodListPage() {
             </div>
 
             {/* Food Grid/List */}
-            <div className={viewMode === "grid"
-              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-              : "space-y-3"
-            }>
+            <div
+              className={
+                viewMode === "grid"
+                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                  : "space-y-3"
+              }
+            >
               {filteredFoods.map((food) => (
                 <FoodCard
                   key={food._id}
@@ -814,45 +1121,55 @@ export default function OwnerFoodListPage() {
                 </button>
 
                 <div className="flex items-center gap-1">
-                  {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                    let pageNum = i + 1;
-                    // Show pages around current
-                    const currentPage = pagination.currentPage;
-                    const totalPages = pagination.totalPages;
-                    
-                    if (totalPages > 5) {
-                      if (currentPage > 3 && i < 3) {
-                        pageNum = currentPage - 2 + i;
-                      } else if (currentPage > 3 && i === 3) {
-                        return <span key="ellipsis" className="px-2 text-gray-400">...</span>;
-                      } else if (currentPage > 3 && i === 4) {
-                        pageNum = totalPages;
+                  {Array.from(
+                    { length: Math.min(5, pagination.totalPages) },
+                    (_, i) => {
+                      let pageNum = i + 1;
+                      // Show pages around current
+                      const currentPage = pagination.currentPage;
+                      const totalPages = pagination.totalPages;
+
+                      if (totalPages > 5) {
+                        if (currentPage > 3 && i < 3) {
+                          pageNum = currentPage - 2 + i;
+                        } else if (currentPage > 3 && i === 3) {
+                          return (
+                            <span key="ellipsis" className="px-2 text-gray-400">
+                              ...
+                            </span>
+                          );
+                        } else if (currentPage > 3 && i === 4) {
+                          pageNum = totalPages;
+                        }
                       }
-                    }
-                    
-                    if (pageNum > totalPages) return null;
-                    
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => setPage(pageNum)}
-                        className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
-                          pageNum === pagination.currentPage
-                            ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30"
-                            : "text-gray-600 hover:bg-gray-100"
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
+
+                      if (pageNum > totalPages) return null;
+
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setPage(pageNum)}
+                          className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
+                            pageNum === pagination.currentPage
+                              ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30"
+                              : "text-gray-600 hover:bg-gray-100"
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    },
+                  )}
                 </div>
 
                 <button
                   onClick={() =>
                     setPage((p) => Math.min(pagination.totalPages, p + 1))
                   }
-                  disabled={pagination.currentPage >= pagination.totalPages || isFetching}
+                  disabled={
+                    pagination.currentPage >= pagination.totalPages ||
+                    isFetching
+                  }
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   Next

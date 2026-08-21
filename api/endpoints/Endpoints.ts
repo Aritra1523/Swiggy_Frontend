@@ -27,7 +27,7 @@ export const endpoints = {
   restaruntDetails: "/restaurant/details",
   restaruntDocument: "/restaurant/documents",
   partnerCOntract: "/partner-contract",
-
+restaurantResendOtp:"/restaurant/resend-otp",
   //OWNER
 
   restaurantDetails: "/restaurant/details",
@@ -43,5 +43,5 @@ export const endpoints = {
   toggleAvailability: (id: string) => `/${id}/toggle-availability`,
   updateOrderStatus: (id: string) => `/orders/${id}/status`,
   restaurantStatus: "/restaurant/status",
-
+  pendingFoodCount:"/restaurant/foods/pending-count"
 };

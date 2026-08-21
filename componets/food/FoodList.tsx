@@ -1,19 +1,51 @@
 "use client";
 
 import useFoodList from "@/customHooks/foodList/useFoodList";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import FoodCard from "./foodCard";
 import FoodSkeleton from "./FoodSkeleton";
 import FoodFilters from "./FoodFilters";
-
+import { socket } from "@/lib/socket/socket";
 
 export default function FoodList() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
   const [sortBy, setSortBy] = useState<string>("popularity");
-  
+
   const { foods, loading, error } = useFoodList();
 
+  useEffect(() => {
+    socket.connect();
+
+    const handleConnect = () => {
+      console.log("Connected:", socket.id);
+    };
+
+    const handleRestaurantStatus = (data: any) => {
+      console.log("Restaurant:", data);
+
+      alert(`${data.restaurantName} is ${data.isOpen ? "OPEN" : "CLOSED"}`);
+    };
+
+    const handleFoodStatus = (data: any) => {
+      console.log("Food:", data);
+      alert(
+        `${data.itemName} is ${
+          data.isAvailable ? "Available" : "Out Of Stock"
+        }`,
+      );
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("restaurant:status", handleRestaurantStatus);
+    socket.on("food:status", handleFoodStatus);
+    return () => {
+      socket.off("connect", handleConnect);
+      socket.off("restaurant:status", handleRestaurantStatus);
+      socket.off("food:status", handleFoodStatus);
+      socket.disconnect();
+    };
+  }, []);
   // Filter and sort foods
   const filteredFoods = useMemo(() => {
     if (!foods.length) return [];
@@ -22,14 +54,16 @@ export default function FoodList() {
 
     // Filter by category (veg/non-veg)
     if (selectedCategory === "veg") {
-      filtered = filtered.filter(food => food.isVeg);
+      filtered = filtered.filter((food) => food.isVeg);
     } else if (selectedCategory === "non-veg") {
-      filtered = filtered.filter(food => !food.isVeg);
+      filtered = filtered.filter((food) => !food.isVeg);
     }
 
     // Filter by price range
     filtered = filtered.filter(
-      food => food.discountPrice >= priceRange[0] && food.discountPrice <= priceRange[1]
+      (food) =>
+        food.discountPrice >= priceRange[0] &&
+        food.discountPrice <= priceRange[1],
     );
 
     // Sort
@@ -68,17 +102,25 @@ export default function FoodList() {
     );
   }
 
+
+
+  
   if (!foods.length) {
     return (
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="text-center py-20">
           <div className="text-6xl mb-4">🍽️</div>
           <p className="text-gray-500 text-lg">No food items available</p>
-          <p className="text-gray-400 text-sm mt-2">Check back later for new additions</p>
+          <p className="text-gray-400 text-sm mt-2">
+            Check back later for new additions
+          </p>
         </div>
       </section>
     );
   }
+  // useEffect(() => {
+
+  // }, []);
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

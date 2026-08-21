@@ -36,12 +36,7 @@ const STATUS_FILTERS = [
 export default function OrdersPage() {
   const router = useRouter();
 
-  const {
-    orders,
-    orderLoading,
-    orderError,
-    handleFetchMyOrders,
-  } = useOrders();
+  const { orders, orderLoading, orderError, handleFetchMyOrders } = useOrders();
 
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -99,10 +94,7 @@ export default function OrdersPage() {
   };
 
   const filteredOrders = orders.filter((order) => {
-    if (
-      activeFilter !== "all" &&
-      order.status !== activeFilter
-    ) {
+    if (activeFilter !== "all" && order.status !== activeFilter) {
       return false;
     }
 
@@ -134,18 +126,12 @@ export default function OrdersPage() {
 
             <div className="flex gap-2 mb-6">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={i}
-                  className="h-10 w-24 bg-gray-200 rounded-full"
-                />
+                <div key={i} className="h-10 w-24 bg-gray-200 rounded-full" />
               ))}
             </div>
 
             {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="bg-white rounded-2xl p-5 shadow-sm mb-4"
-              >
+              <div key={i} className="bg-white rounded-2xl p-5 shadow-sm mb-4">
                 <div className="flex justify-between">
                   <div className="h-6 w-32 bg-gray-200 rounded" />
                   <div className="h-6 w-24 bg-gray-200 rounded-full" />
@@ -175,9 +161,7 @@ export default function OrdersPage() {
             Couldn't load orders
           </h2>
 
-          <p className="text-gray-500 mb-6">
-            {orderError}
-          </p>
+          <p className="text-gray-500 mb-6">{orderError}</p>
 
           <button
             onClick={handleFetchMyOrders}
@@ -192,33 +176,27 @@ export default function OrdersPage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-
       {/* Header */}
 
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-
             <Link
               href="/"
               className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
             >
               <ArrowLeft className="w-5 h-5" />
-              <span className="font-medium">
-                Back to Home
-              </span>
+              <span className="font-medium">Back to Home</span>
             </Link>
 
             <span className="text-sm text-gray-500">
               {orders.length} orders
             </span>
-
           </div>
         </div>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 py-6">
-
         {/* Title */}
 
         <div className="mb-6">
@@ -227,15 +205,12 @@ export default function OrdersPage() {
             My Orders
           </h1>
 
-          <p className="text-gray-500 mt-1">
-            Track all your food orders
-          </p>
+          <p className="text-gray-500 mt-1">Track all your food orders</p>
         </div>
 
         {/* Search */}
 
         <div className="flex flex-col md:flex-row gap-4 mb-6">
-
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
 
@@ -244,16 +219,14 @@ export default function OrdersPage() {
               placeholder="Search restaurant or food..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 placeholder-gray-400 text-gray-800"
             />
           </div>
-
         </div>
 
         {/* Filters */}
 
         <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6">
-
           <Filter className="w-4 h-4 text-gray-400 shrink-0" />
 
           {STATUS_FILTERS.map((status) => (
@@ -266,24 +239,18 @@ export default function OrdersPage() {
                   : "bg-white text-gray-600 hover:bg-gray-100"
               }`}
             >
-              {status === "all"
-                ? "All Orders"
-                : status.replaceAll("_", " ")}
+              {status === "all" ? "All Orders" : status.replaceAll("_", " ")}
             </button>
           ))}
-
         </div>
 
         {/* No Orders */}
 
         {!orders.length && (
           <div className="bg-white rounded-3xl p-12 text-center border border-gray-100">
-
             <ShoppingBag className="w-20 h-20 text-orange-400 mx-auto mb-5" />
 
-            <h2 className="text-2xl font-bold text-gray-800">
-              No orders yet
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-800">No orders yet</h2>
 
             <p className="text-gray-500 mt-2">
               Start ordering your favourite food.
@@ -295,7 +262,6 @@ export default function OrdersPage() {
             >
               Browse Restaurants
             </button>
-
           </div>
         )}
 
@@ -303,7 +269,6 @@ export default function OrdersPage() {
 
         {orders.length > 0 && filteredOrders.length === 0 && (
           <div className="bg-white rounded-3xl p-12 text-center border border-gray-100">
-
             <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
 
             <h3 className="text-xl font-semibold text-gray-800">
@@ -319,27 +284,21 @@ export default function OrdersPage() {
             >
               Clear filters
             </button>
-
           </div>
         )}
 
         {/* Orders */}
 
         <AnimatePresence>
-
           <div className="space-y-4">
-
             {filteredOrders.map((order, index) => {
-
               const totalItems =
                 order.items?.reduce(
-                  (total, item) =>
-                    total + item.quantity,
+                  (total, item) => total + item.quantity,
                   0,
                 ) || 0;
 
-              const status =
-                getStatusConfig(order.status);
+              const status = getStatusConfig(order.status);
 
               const StatusIcon = status.icon;
 
@@ -351,34 +310,25 @@ export default function OrdersPage() {
                   transition={{ delay: index * 0.05 }}
                   className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md overflow-hidden"
                 >
-
                   {/* Restaurant */}
 
                   <div className="p-5 pb-0">
-
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-
                       <div className="flex items-center gap-3">
-
                         <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
                           <Utensils className="w-6 h-6 text-orange-500" />
                         </div>
 
                         <div>
-
                           <h3 className="font-bold text-gray-900">
-                            {order.restaurant?.restaurantName ||
-                              "Restaurant"}
+                            {order.restaurant?.restaurantName || "Restaurant"}
                           </h3>
 
                           <div className="flex items-center gap-3 text-xs text-gray-500">
-
                             <span className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
 
-                              {new Date(
-                                order.createdAt,
-                              ).toLocaleDateString(
+                              {new Date(order.createdAt).toLocaleDateString(
                                 "en-IN",
                                 {
                                   day: "numeric",
@@ -393,9 +343,7 @@ export default function OrdersPage() {
                             <span className="flex items-center gap-1">
                               <Clock className="w-3 h-3" />
 
-                              {new Date(
-                                order.createdAt,
-                              ).toLocaleTimeString(
+                              {new Date(order.createdAt).toLocaleTimeString(
                                 "en-IN",
                                 {
                                   hour: "2-digit",
@@ -403,11 +351,8 @@ export default function OrdersPage() {
                                 },
                               )}
                             </span>
-
                           </div>
-
                         </div>
-
                       </div>
 
                       {/* Status */}
@@ -418,46 +363,32 @@ export default function OrdersPage() {
                         <StatusIcon className="w-4 h-4" />
                         {status.label}
                       </div>
-
                     </div>
-
                   </div>
 
                   {/* Items */}
 
                   <div className="px-5 pt-4 pb-3">
-
                     <div className="space-y-2">
-
                       {order.items?.slice(0, 3).map((item) => (
-
                         <div
                           key={item._id}
                           className="flex items-center justify-between"
                         >
-
                           <div className="flex gap-3">
-
                             <span className="text-sm font-medium text-gray-500">
                               {item.quantity}×
                             </span>
 
                             <span className="text-sm text-gray-700">
-                              {item.food?.itemName ||
-                                "Food item unavailable"}
+                              {item.food?.itemName || "Food item unavailable"}
                             </span>
-
                           </div>
 
                           <span className="text-sm font-medium">
-                            ₹{(
-                              item.price *
-                              item.quantity
-                            ).toFixed(2)}
+                            ₹{(item.price * item.quantity).toFixed(2)}
                           </span>
-
                         </div>
-
                       ))}
 
                       {order.items?.length > 3 && (
@@ -465,9 +396,7 @@ export default function OrdersPage() {
                           +{order.items.length - 3} more items
                         </p>
                       )}
-
                     </div>
-
                   </div>
 
                   <div className="border-t border-gray-100" />
@@ -475,9 +404,7 @@ export default function OrdersPage() {
                   {/* Footer */}
 
                   <div className="px-5 py-4 flex flex-col sm:flex-row justify-between gap-3">
-
                     <div className="flex items-center gap-4 text-sm text-gray-500">
-
                       <div className="flex items-center gap-1">
                         <MapPin className="w-4 h-4" />
                         <span className="truncate max-w-[200px]">
@@ -485,19 +412,15 @@ export default function OrdersPage() {
                         </span>
                       </div>
 
-                      <span className="hidden sm:block">
-                        •
-                      </span>
+                      <span className="hidden sm:block">•</span>
 
                       <div className="flex items-center gap-1">
                         <ShoppingBag className="w-4 h-4" />
                         {totalItems} items
                       </div>
-
                     </div>
 
                     <div className="flex items-center justify-between gap-4">
-
                       <span className="text-lg font-bold text-orange-600">
                         ₹{order.totalAmount.toFixed(2)}
                       </span>
@@ -509,20 +432,15 @@ export default function OrdersPage() {
                         View Details
                         <ChevronRight className="w-4 h-4" />
                       </Link>
-
                     </div>
-
                   </div>
 
                   {/* Progress */}
 
                   {order.status !== "delivered" &&
                     order.status !== "cancelled" && (
-
                       <div className="px-5 pb-5">
-
                         <div className="bg-gray-100 rounded-full h-1.5 overflow-hidden">
-
                           <div
                             className="h-full bg-orange-500 rounded-full transition-all"
                             style={{
@@ -533,13 +451,11 @@ export default function OrdersPage() {
                                     ? "40%"
                                     : order.status === "preparing"
                                       ? "60%"
-                                      : order.status ===
-                                          "out_for_delivery"
+                                      : order.status === "out_for_delivery"
                                         ? "85%"
                                         : "0%",
                             }}
                           />
-
                         </div>
 
                         <div className="flex justify-between text-xs text-gray-400 mt-1.5">
@@ -548,19 +464,13 @@ export default function OrdersPage() {
                           <span>Preparing</span>
                           <span>Delivered</span>
                         </div>
-
                       </div>
-
                     )}
-
                 </motion.div>
               );
             })}
-
           </div>
-
         </AnimatePresence>
-
       </div>
     </main>
   );

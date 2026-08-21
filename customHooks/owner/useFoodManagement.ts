@@ -16,6 +16,7 @@ import {
   UpdateOrderStatusResponse,
   RestaurantStatusPayload,
   RestaurantStatusResponse,
+  PendingFoodCountResponse,
 } from "@/typescript/restaurantOwner/restaurantOwner";
 
 // Query keys centralized so mutations can invalidate precisely
@@ -266,14 +267,17 @@ export function useUpdateOrderStatus() {
   });
 }
 
+export const restaurantKeys = {
+  myRestaurant: ["owner", "restaurant"] as const,
+};
+
 const updateRestaurantStatus = async (
-  data: RestaurantStatusPayload,
+  payload: RestaurantStatusPayload,
 ): Promise<RestaurantStatusResponse> => {
   const response = await axiosInstance.patch<RestaurantStatusResponse>(
-    endpoints.restaurantStatus,
-    data,
+    endpoints.restaurantStatus, // PATCH /restaurant/status
+    payload,
   );
-
   return response.data;
 };
 
@@ -283,17 +287,10 @@ export const useRestaurantStatus = () => {
   return useMutation({
     mutationFn: updateRestaurantStatus,
 
-    onSuccess: (response) => {
-      console.log("Restaurant status updated:", response);
-
-      // Refresh restaurant information
-      queryClient.invalidateQueries({
-        queryKey: ["restaurant"],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["restaurantStatus"],
-      });
+    onSuccess: () => {
+      // Reuses the SAME key your existing useMyRestaurant (top of file)
+      // already uses — no second key system, no chance of drift.
+      queryClient.invalidateQueries({ queryKey: ownerKeys.restaurant });
     },
 
     onError: (error) => {
@@ -301,3 +298,26 @@ export const useRestaurantStatus = () => {
     },
   });
 };
+export const foodKeys = {
+  all: ["foods"] as const,
+  lists: () => [...foodKeys.all, "list"] as const,
+  list: (filters: any) => [...foodKeys.lists(), filters] as const,
+  details: () => [...foodKeys.all, "detail"] as const,
+  detail: (id: string) => [...foodKeys.details(), id] as const,
+  pendingCount: () => [...foodKeys.all, "pending-count"] as const,
+};
+export function usePendingFoodCount() {
+  return useQuery({
+    queryKey: foodKeys.pendingCount(),
+    queryFn: async () => {
+      const response = await axiosInstance.get<PendingFoodCountResponse>(
+        "/restaurant/foods/pending-count"
+      );
+      return response.data;
+    },
+    select: (data) => data.count, // Extract only the count from the response
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: true,
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+}

@@ -185,12 +185,17 @@ export function OrderCard({ order }: { order: OwnerOrder }) {
 
       {/* ITEMS */}
       <div className="space-y-1 mb-3">
-        {order.items.map((item) => (
-          <p key={item._id} className="text-sm text-gray-600">
-            {item.quantity}× {item.food?.itemName || "Food item unavailable"}
-          </p>
-        ))}
-      </div>
+  {order.items.map((item) => (
+    <div key={item._id} className="flex items-center justify-between text-sm text-gray-600">
+      <span>
+        {item.quantity}× {item.food?.itemName || "Food item unavailable"}
+      </span>
+      <span className="font-medium">
+        ₹{(item.food?.discountPrice || item.food?.basePrice || item.basePrice || 0) * item.quantity}
+      </span>
+    </div>
+  ))}
+</div>
 
       {/* FOOTER */}
       <div className="flex items-center justify-between pt-3 border-t border-gray-100">

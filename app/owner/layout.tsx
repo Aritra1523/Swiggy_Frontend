@@ -3,6 +3,7 @@
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import OwnerSidebar from "@/componets/owner/Sidebar/OwnerSidebar";
+import SocketProvider from "@/lib/socket/SocketProvider/SocketProvider";
 
 export default function OwnerLayout({
   children,
@@ -37,7 +38,9 @@ export default function OwnerLayout({
   return (
     <div className="min-h-screen bg-gray-50 md:flex">
       <OwnerSidebar />
+      <SocketProvider/>
       <div className="flex-1 md:ml-64">{children}</div>
+      {/* </SocketProvider> */}
     </div>
   );
 }

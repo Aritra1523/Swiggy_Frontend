@@ -10,8 +10,7 @@ import { submitPartnerContract } from "@/redux/slice/partner/partnerSlice";
 
 import { PartnerContractPayload } from "@/typescript/partner/PartnerContract";
 import { partnerContractSchema } from "@/schme/partner/partnerContractSchema";
-import { Router, useRouter } from "next/router";
-
+import { useRouter } from "next/navigation";
 const usePartnerContract = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();

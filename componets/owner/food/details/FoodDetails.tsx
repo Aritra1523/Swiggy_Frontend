@@ -586,17 +586,9 @@ export default function FoodDetailsPage() {
             </div>
 
             {/* Additional Info */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6 p-4 bg-gray-50 rounded-2xl">
+            <div className="grid grid-cols-1  gap-3 mb-6 p-4 bg-gray-50 rounded-2xl">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-white rounded-lg shadow-sm">
-                  <Package className="w-4 h-4 text-gray-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-400">Stock Status</p>
-                  <p className="text-sm font-medium text-gray-900">
-                    {food.stock > 0 ? `${food.stock} units available` : "Out of stock"}
-                  </p>
-                </div>
+               
               </div>
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-white rounded-lg shadow-sm">
@@ -621,13 +613,7 @@ export default function FoodDetailsPage() {
                 Edit Item
               </button>
 
-              <button
-                onClick={() => router.push(`/owner/foods/${food._id}/analytics`)}
-                className="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-white border-2 border-gray-200 hover:border-orange-200 hover:bg-orange-50 text-gray-700 hover:text-orange-600 font-semibold rounded-xl transition-all"
-              >
-                <ShoppingBag className="w-4 h-4" />
-                View Analytics
-              </button>
+           
             </div>
           </div>
         </div>

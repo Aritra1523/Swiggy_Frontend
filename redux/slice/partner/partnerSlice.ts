@@ -82,6 +82,29 @@ export const verifyRestaurantOtp = createAsyncThunk<
   }
 });
 
+
+/*  Resend OTP  */
+ 
+export const resendRestaurantOtp = createAsyncThunk<
+  RestaurantOtpResponse,
+  { email: string },
+  { rejectValue: string }
+>("partner/resendRestaurantOtp", async (data, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.post(
+      endpoints.restaurantResendOtp,
+      data,
+    );
+ 
+    return response.data;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to resend OTP",
+    );
+  }
+});
+
+
 //Add Restaurant Details
 export const addRestaurantDetails = createAsyncThunk<
   RestaurantDetailsResponse,
@@ -186,6 +209,23 @@ const partnerSlice = createSlice({
       .addCase(verifyRestaurantOtp.rejected, (state, {payload}) => {
         state.loading = false;
         state.error = payload ?? "OTP Failed";
+      })
+
+
+        /* Resend OTP */
+ 
+      .addCase(resendRestaurantOtp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+ 
+      .addCase(resendRestaurantOtp.fulfilled, (state) => {
+        state.loading = false;
+      })
+ 
+      .addCase(resendRestaurantOtp.rejected, (state, {payload}) => {
+        state.loading = false;
+        state.error = payload ?? "Failed to resend OTP";
       })
       //Add Restaurant Details
       .addCase(addRestaurantDetails.pending, (state) => {

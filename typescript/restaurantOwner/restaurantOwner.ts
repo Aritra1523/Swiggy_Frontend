@@ -359,6 +359,7 @@ export interface OwnerOrderItem {
   food: { _id: string; itemName: string; price?: number };
   quantity: number;
   price?: number;
+  basePrice:number
 }
 
 export interface OwnerOrder {
@@ -403,4 +404,10 @@ export interface RestaurantStatusResponse {
     restaurantName: string;
     isOpen: boolean;
   };
+}
+
+export interface PendingFoodCountResponse {
+  status: boolean;
+  message: string;
+  count: number;
 }

@@ -40,7 +40,7 @@ import {
 const CANCELLABLE_STATUSES = [
   "placed",
   "accepted",
-  "preparing",
+  // "preparing",
 ];
 
 // Status Configuration

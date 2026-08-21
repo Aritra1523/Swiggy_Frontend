@@ -3,6 +3,7 @@ export interface RestaurantInfo {
   restaurantName: string;
   location: string;
   status: string;
+  isOpen: boolean;
 }
 
 export interface Food {

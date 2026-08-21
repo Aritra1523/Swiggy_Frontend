@@ -48,7 +48,7 @@ export const BasicInfoStep = ({
         <input
           type="text"
           {...register("itemName")}
-          className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300"
+          className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300 text-gray-800 placeholder-gray-400"
           placeholder="e.g., Butter Chicken"
         />
       </FormField>
@@ -61,7 +61,7 @@ export const BasicInfoStep = ({
         <textarea
           {...register("description")}
           rows={3}
-          className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300 resize-none"
+          className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300 resize-none text-gray-800 placeholder-gray-400"
           placeholder="Describe your dish..."
         />
       </FormField>
@@ -71,7 +71,7 @@ export const BasicInfoStep = ({
           <div className="relative">
             <select
               {...register("foodType")}
-              className="w-full pl-10 pr-10 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white appearance-none border-gray-300"
+              className="w-full pl-10 pr-10 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white appearance-none border-gray-300 text-gray-800"
             >
               {FOOD_TYPES.map((type) => (
                 <option key={type} value={type}>
@@ -123,7 +123,7 @@ export const BasicInfoStep = ({
           <input
             type="text"
             {...register("category")}
-            className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300"
+            className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300 text-gray-800 placeholder-gray-400"
             placeholder="e.g., Curries"
           />
         </FormField>
@@ -135,7 +135,7 @@ export const BasicInfoStep = ({
           <input
             type="text"
             {...register("cuisine")}
-            className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300"
+            className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300 text-gray-800 placeholder-gray-400"
             placeholder="e.g., North Indian"
           />
         </FormField>
@@ -183,14 +183,14 @@ export const PricingStep = ({ onBack, onNext }: any) => {
             min={0}
             step={0.5}
             {...register("basePrice", { valueAsNumber: true })}
-            className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300"
+            className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300 text-gray-800 placeholder-gray-400"
             placeholder="0.00"
           />
         </FormField>
         <FormField
           label="Discount Price"
           error={errors.discountPrice?.message}
-          icon={Percent}
+          icon={DollarSign}
           helper="Leave 0 for no discount"
         >
           <input
@@ -198,7 +198,7 @@ export const PricingStep = ({ onBack, onNext }: any) => {
             min={0}
             step={0.5}
             {...register("discountPrice", { valueAsNumber: true })}
-            className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300"
+            className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300 text-gray-800 placeholder-gray-400"
             placeholder="0.00"
           />
         </FormField>
@@ -228,31 +228,31 @@ export const PricingStep = ({ onBack, onNext }: any) => {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField label="GST (%)" error={errors.gst?.message} required>
-          <input
-            type="number"
-            min={0}
-            max={100}
-            {...register("gst", { valueAsNumber: true })}
-            className="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300"
-            placeholder="5"
-          />
-        </FormField>
-        <FormField
-          label="Preparation Time"
-          error={errors.preparationTime?.message}
-          required
-          icon={Clock}
-          helper="In minutes"
-        >
-          <input
-            type="number"
-            min={0}
-            {...register("preparationTime", { valueAsNumber: true })}
-            className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300"
-            placeholder="15"
-          />
-        </FormField>
+       <FormField label="GST (%)" error={errors.gst?.message} required>
+  <input
+    type="number"
+    min={0}
+    max={100}
+    {...register("gst", { valueAsNumber: true })}
+    className="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300 text-gray-800 placeholder-gray-400"
+    placeholder="5"
+  />
+</FormField>
+       <FormField
+  label="Preparation Time"
+  error={errors.preparationTime?.message}
+  required
+  icon={Clock}
+  helper="In minutes"
+>
+  <input
+    type="number"
+    min={0}
+    {...register("preparationTime", { valueAsNumber: true })}
+    className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50 focus:bg-white border-gray-300 text-gray-800 placeholder-gray-400"
+    placeholder="15"
+  />
+</FormField>
       </div>
 
       <div className="flex gap-3">
