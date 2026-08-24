@@ -1,10 +1,10 @@
-import OrdersPage from '@/componets/orders/OrdersPage'
+import CheckoutPage from '@/componets/CheckoutPage/CheckoutPage'
 import React from 'react'
 
 const Page = () => {
   return (
     <div>
-        <OrdersPage/>
+        <CheckoutPage/>
     </div>
   )
 }

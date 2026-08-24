@@ -4,6 +4,8 @@ export const endpoints = {
   otp: "/auth/otp",
 
   //user
+  restaurantList:"/user/restaurant-list",
+  restaurantFood:(restaurantId:string)=>`/user/restaurant/${restaurantId}/foods`,
   foodList: "/user/food_list",
 
   addCart: "/add/cart",
@@ -27,7 +29,11 @@ export const endpoints = {
   restaruntDetails: "/restaurant/details",
   restaruntDocument: "/restaurant/documents",
   partnerCOntract: "/partner-contract",
-restaurantResendOtp:"/restaurant/resend-otp",
+  restaurantResendOtp: "/restaurant/resend-otp",
+
+
+
+  
   //OWNER
 
   restaurantDetails: "/restaurant/details",
@@ -38,10 +44,9 @@ restaurantResendOtp:"/restaurant/resend-otp",
   addFood: "/add-food",
   editFood: (id: string) => `/food/edit/${id}`,
   deleteFood: (id: string) => `/food/${id}`,
-  // NOTE: guessed path — swap for whatever your owner-order-list route actually is
   ownerOrders: "/restaurant/orders",
   toggleAvailability: (id: string) => `/${id}/toggle-availability`,
   updateOrderStatus: (id: string) => `/orders/${id}/status`,
   restaurantStatus: "/restaurant/status",
-  pendingFoodCount:"/restaurant/foods/pending-count"
+  pendingFoodCount: "/restaurant/foods/pending-count",
 };

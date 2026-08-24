@@ -801,7 +801,7 @@ export default function OwnerFoodListPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           <StatCard
             label="Total Items"
-            value={stats?.total || foods?.length || 0}
+            value={pagination?.totalItems || 0}
             icon={Utensils}
             tone="gray"
             subtitle="All menu items"

@@ -1,4 +1,3 @@
-// components/layout/FoodBubbleWithImages.tsx (Alternative with actual food images)
 "use client";
 
 import { useState, useEffect } from "react";

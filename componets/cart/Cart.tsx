@@ -4,7 +4,7 @@ import useCart from "@/customHooks/order/useCart";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // Add this import
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingBag,
@@ -24,7 +24,7 @@ import {
 import useOrders from "@/customHooks/order/useOrders";
 
 export default function CartPage() {
-  const router = useRouter(); // Add this
+  const router = useRouter();
   const {
     cart,
     cartLoading,
@@ -36,12 +36,16 @@ export default function CartPage() {
   const { handlePlaceOrder, orderLoading, orderError } = useOrders();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
+  // NEW: Track first load and per-item loading state
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  const [updatingItemId, setUpdatingItemId] = useState<string | null>(null);
+
   useEffect(() => {
-    handleFetchCart();
+    handleFetchCart().finally(() => setHasLoadedOnce(true));
   }, []);
 
-  // Skeleton Loading
-  if (cartLoading) {
+  // NEW: Only show skeleton on FIRST load (not on updates)
+  if (cartLoading && !hasLoadedOnce) {
     return (
       <main className="min-h-screen bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 py-8">
@@ -81,7 +85,9 @@ export default function CartPage() {
           </h2>
           <p className="text-gray-500 mb-6">{cartError}</p>
           <button
-            onClick={handleFetchCart}
+            onClick={() =>
+              handleFetchCart().finally(() => setHasLoadedOnce(true))
+            }
             className="px-6 py-3 bg-orange-500 text-white rounded-xl font-semibold hover:bg-orange-600 transition-colors"
           >
             Try Again
@@ -148,18 +154,27 @@ export default function CartPage() {
     return groups;
   }, {});
 
-  // Handle checkout - redirect to checkout page
+  // NEW: Wrapped handlers with local loading state
+  const onIncrement = async (foodId: string) => {
+    setUpdatingItemId(foodId);
+    await handleIncrementCartItem(foodId);
+    setUpdatingItemId(null);
+  };
+
+  const onDecrement = async (foodId: string) => {
+    setUpdatingItemId(foodId);
+    await handleDecrementCartItem(foodId);
+    setUpdatingItemId(null);
+  };
+
   const handleCheckout = () => {
-    // Validate cart has items
     if (items.length === 0) {
       alert("Your cart is empty!");
       return;
     }
 
-    // Show loading state
     setIsCheckingOut(true);
 
-    // Optional: Save checkout data to localStorage for the checkout page
     const checkoutData = {
       items: items,
       totalAmount: grandTotal,
@@ -169,9 +184,8 @@ export default function CartPage() {
     };
     localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
 
-    // Redirect to checkout page after a small delay for better UX
     setTimeout(() => {
-      router.push("/checkoutpage");
+      router.push("/check");
     }, 600);
   };
 
@@ -249,6 +263,7 @@ export default function CartPage() {
                     const food = item.food;
                     const price = food?.discountPrice || food?.basePrice || 0;
                     const hasDiscount = food?.basePrice > price;
+                    const isUpdating = updatingItemId === food?._id;
 
                     return (
                       <motion.div
@@ -256,7 +271,9 @@ export default function CartPage() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, x: -20 }}
-                        className="p-4 hover:bg-gray-50/50 transition-colors"
+                        className={`p-4 hover:bg-gray-50/50 transition-colors ${
+                          isUpdating ? "opacity-60" : "opacity-100"
+                        }`}
                       >
                         <div className="flex gap-4">
                           {/* Image */}
@@ -306,34 +323,31 @@ export default function CartPage() {
                               )}
                             </div>
 
-                            {/* Quantity Controls */}
+                            {/* Quantity Controls - UPDATED with disabled states */}
                             <div className="flex items-center gap-3 mt-3">
                               <button
-                                onClick={() =>
-                                  handleDecrementCartItem(food._id)
-                                }
-                                className="w-8 h-8 rounded-full border-2 border-gray-200 flex items-center justify-center hover:border-orange-500 hover:bg-orange-50 transition-colors"
+                                onClick={() => onDecrement(food._id)}
+                                disabled={isUpdating}
+                                className="w-8 h-8 rounded-full border-2 border-gray-200 flex items-center justify-center hover:border-orange-500 hover:bg-orange-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                                 aria-label="Decrease quantity"
                               >
                                 <Minus className="w-4 h-4 text-gray-600" />
                               </button>
-                             <span className="font-semibold w-6 text-center text-black">
-  {item.quantity}
-</span>
+                              <span className="font-semibold w-6 text-center text-black">
+                                {isUpdating ? "..." : item.quantity}
+                              </span>
                               <button
-                                onClick={() =>
-                                  handleIncrementCartItem(food._id)
-                                }
-                                className="w-8 h-8 rounded-full border-2 border-orange-500 flex items-center justify-center hover:bg-orange-50 transition-colors"
+                                onClick={() => onIncrement(food._id)}
+                                disabled={isUpdating}
+                                className="w-8 h-8 rounded-full border-2 border-orange-500 flex items-center justify-center hover:bg-orange-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                                 aria-label="Increase quantity"
                               >
                                 <Plus className="w-4 h-4 text-orange-500" />
                               </button>
                               <button
-                                onClick={() =>
-                                  handleDecrementCartItem(food._id)
-                                }
-                                className="ml-2 p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                onClick={() => onDecrement(food._id)}
+                                disabled={isUpdating}
+                                className="ml-2 p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                                 aria-label="Remove item"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -368,10 +382,10 @@ export default function CartPage() {
           <div className="lg:col-span-1">
             <div className="sticky top-24">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-               <h2 className="text-xl font-bold mb-5 flex items-center gap-2 text-gray-800">
-  <CreditCard className="w-5 h-5 text-orange-500" />
-  Bill Details
-</h2>
+                <h2 className="text-xl font-bold mb-5 flex items-center gap-2 text-gray-800">
+                  <CreditCard className="w-5 h-5 text-orange-500" />
+                  Bill Details
+                </h2>
 
                 <div className="space-y-3">
                   <div className="flex justify-between text-gray-600">
@@ -414,19 +428,18 @@ export default function CartPage() {
                 </div>
 
                 <div className="border-t pt-4 mt-4">
-                <div className="flex justify-between text-lg font-bold">
-  <span className="text-black">Grand Total</span>
-  <span className="text-orange-500">₹{grandTotal}</span>
-</div>
+                  <div className="flex justify-between text-lg font-bold">
+                    <span className="text-black">Grand Total</span>
+                    <span className="text-orange-500">₹{grandTotal}</span>
+                  </div>
                   <p className="text-xs text-gray-400 mt-1">
                     Inclusive of all taxes and charges
                   </p>
                 </div>
 
-                {/* Updated Checkout Button */}
                 <button
-                  onClick={handleCheckout} // Changed from setIsCheckingOut(true)
-                  disabled={isCheckingOut || items.length === 0} // Added items check
+                  onClick={handleCheckout}
+                  disabled={isCheckingOut || items.length === 0}
                   className="w-full mt-6 py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-bold shadow-lg shadow-orange-500/25 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isCheckingOut ? (

@@ -8,5 +8,10 @@ export interface LoginResponse {
   message: string;
   accessToken: string;
   refreshToken: string;
-  user: any;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+  };
 }

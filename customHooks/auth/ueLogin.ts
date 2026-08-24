@@ -3,6 +3,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 import { AppDispatch } from "@/redux/store/store";
 import Swal from "sweetalert2";
 import { setCookie } from "cookies-next";
@@ -13,6 +14,7 @@ import { loginSchema } from "@/schme/auth/loginSchema";
 
 const useLogin = (onSuccess?: () => void) => {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
   const {
     register,
@@ -52,6 +54,12 @@ const useLogin = (onSuccess?: () => void) => {
 
       // close login drawer
       onSuccess?.();
+
+      // Restaurant owners land on their dashboard, not wherever the
+      // login drawer happened to be opened from
+      if (res.data.role === "restaurant_owner") {
+        router.push("/owner");
+      }
     } catch (err: any) {
       Swal.fire({
         icon: "error",

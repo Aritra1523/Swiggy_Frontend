@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import useOrders from "@/customHooks/order/useOrders";
+import { socket } from "@/lib/socket/socket";
 
 import {
   Clock,
@@ -41,45 +42,78 @@ export default function OrdersPage() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
+  // ---- Socket io:  ----
+
   useEffect(() => {
     handleFetchMyOrders();
   }, []);
 
+  // ---- Socket: live order status updates ----
+  useEffect(() => {
+    // Connect to socket
+    socket.connect();
+
+    const handleConnect = () => {
+      console.log("Connected:", socket.id);
+    };
+
+    const handleOrderStatus = (data: any) => {
+      console.log("Order status update:", data);
+      // Refetch orders to get the updated status
+      handleFetchMyOrders();
+      // alert("hiii")
+    };
+
+    // Register event listeners
+    socket.on("connect", handleConnect);
+    socket.on("order:status", handleOrderStatus);
+
+    // Cleanup on unmount
+    return () => {
+      socket.off("connect", handleConnect);
+      socket.off("order:status", handleOrderStatus);
+      socket.disconnect();
+    };
+  }, []); // Empty dependency array ensures this runs once
+
+  // ✅ Updated statusConfig with all statuses including out_for_delivery
   const statusConfig = {
     placed: {
       icon: Clock,
       color: "bg-yellow-50 text-yellow-700 border-yellow-100",
       label: "Order Placed",
+      progress: 20,
     },
-
     accepted: {
       icon: CheckCircle,
       color: "bg-blue-50 text-blue-700 border-blue-100",
       label: "Accepted",
+      progress: 40,
     },
-
     preparing: {
       icon: Utensils,
       color: "bg-purple-50 text-purple-700 border-purple-100",
       label: "Preparing",
+      progress: 60,
     },
-
     out_for_delivery: {
+      // ✅ Added out_for_delivery
       icon: Bike,
       color: "bg-indigo-50 text-indigo-700 border-indigo-100",
       label: "Out for Delivery",
+      progress: 85,
     },
-
     delivered: {
       icon: CheckCircle,
       color: "bg-green-50 text-green-700 border-green-100",
       label: "Delivered",
+      progress: 100,
     },
-
     cancelled: {
       icon: XCircle,
       color: "bg-red-50 text-red-700 border-red-100",
       label: "Cancelled",
+      progress: 0,
     },
   };
 
@@ -89,6 +123,7 @@ export default function OrdersPage() {
         icon: Clock,
         color: "bg-gray-50 text-gray-700 border-gray-100",
         label: status.replaceAll("_", " "),
+        progress: 0,
       }
     );
   };
@@ -385,7 +420,7 @@ export default function OrdersPage() {
                             </span>
                           </div>
 
-                          <span className="text-sm font-medium">
+                          <span className="text-sm font-medium text-orange-500">
                             ₹{(item.price * item.quantity).toFixed(2)}
                           </span>
                         </div>
@@ -435,7 +470,7 @@ export default function OrdersPage() {
                     </div>
                   </div>
 
-                  {/* Progress */}
+                  {/* Progress - Updated to include out_for_delivery */}
 
                   {order.status !== "delivered" &&
                     order.status !== "cancelled" && (
@@ -451,7 +486,7 @@ export default function OrdersPage() {
                                     ? "40%"
                                     : order.status === "preparing"
                                       ? "60%"
-                                      : order.status === "out_for_delivery"
+                                      : order.status === "out_for_delivery" // ✅ Added out_for_delivery
                                         ? "85%"
                                         : "0%",
                             }}
@@ -462,6 +497,8 @@ export default function OrdersPage() {
                           <span>Placed</span>
                           <span>Accepted</span>
                           <span>Preparing</span>
+                          <span>Out for Delivery</span>{" "}
+                          {/* ✅ Added this step */}
                           <span>Delivered</span>
                         </div>
                       </div>

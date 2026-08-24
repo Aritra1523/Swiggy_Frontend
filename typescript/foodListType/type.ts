@@ -54,3 +54,33 @@ export interface FoodListResponse {
   message: string;
   data: Food[];
 }
+// types/restaurant.ts
+
+export interface RestaurantResponse {
+  success: boolean;
+  fromCache: boolean;
+  message: string;
+  data: Restaurant[];
+}
+
+export interface Restaurant {
+  _id: string;
+  restaurantName: string;
+  location: string;
+  workingDays: string[];
+  isOpen: boolean;
+  status: "approved" | "pending" | "rejected";
+  outletType: "Restaurant" | "Cafe";
+  openingClosing: OpeningClosing;
+}
+
+export interface OpeningClosing {
+  sameForAllDays: boolean;
+  slots: OpeningSlot[];
+}
+
+export interface OpeningSlot {
+  open: string;
+  close: string;
+  _id: string;
+}

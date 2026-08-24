@@ -395,7 +395,10 @@ export default function OwnerDashboardPage() {
   const isOpen =
     localIsOpen !== null ? localIsOpen : (restaurant?.isOpen ?? false);
 
-  const totalItems = foodsRes?.pagination?.totalItems ?? foods.length;
+  // "Total Menu Items" should mean approved, live menu items — not
+  // pending+approved+rejected combined (that's what pagination.totalItems
+  // counts). Matches the same stats.approved the Food Management tab uses.
+  const totalItems = foodsRes?.stats?.approved ?? 0;
   // Use the pending food count hook
   const { data: pendingCount = 0, isLoading: pendingCountLoading } =
     usePendingFoodCount();
@@ -508,103 +511,107 @@ export default function OwnerDashboardPage() {
           </div>
 
           {/* Restaurant Info - Premium Card Overlay */}
-          <div className="relative -mt-20 px-6 pb-6">
-            <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 p-6 shadow-2xl">
-              <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-                {/* Restaurant Avatar - Larger with glow */}
-                <div className="flex items-center gap-5">
-                  <div className="relative">
-                    <div className="w-28 h-28 rounded-2xl border-4 border-white shadow-2xl bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center overflow-hidden ring-4 ring-orange-500/30">
-                      {restaurant.logo ? (
-                        <Image
-                          src={restaurant.logo}
-                          alt={restaurant.restaurantName}
-                          width={112}
-                          height={112}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <Store className="w-12 h-12 text-white" />
-                      )}
-                    </div>
-                    {/* Online Status Badge */}
-                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center">
-                      <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse" />
-                    </div>
-                  </div>
-
-                  <div className="lg:hidden">
-                    <h1 className="text-2xl font-bold text-white drop-shadow-lg">
-                      {restaurant.restaurantName}
-                    </h1>
-                  </div>
-                </div>
-
-                {/* Restaurant Info */}
-                <div className="flex-1 min-w-0">
-                  <h1 className="hidden lg:block text-3xl font-bold text-white drop-shadow-lg mb-2">
-                    {restaurant.restaurantName}
-                  </h1>
-
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="flex items-center gap-1.5 text-sm bg-white/20 backdrop-blur-sm px-3.5 py-1.5 rounded-full border border-white/20 text-white hover:bg-white/30 transition-colors">
-                      <MapPin className="w-3.5 h-3.5" />
-                      {restaurant.location || "Location not set"}
-                    </span>
-
-                    <span className="flex items-center gap-1.5 text-sm bg-white/20 backdrop-blur-sm px-3.5 py-1.5 rounded-full border border-white/20 text-white hover:bg-white/30 transition-colors">
-                      <ShoppingBag className="w-3.5 h-3.5" />
-                      <span className="font-semibold">{totalOrders || 0}</span>
-                      <span className="opacity-70">orders</span>
-                    </span>
-
-                    <span className="flex items-center gap-1.5 text-sm bg-white/20 backdrop-blur-sm px-3.5 py-1.5 rounded-full border border-white/20 text-white hover:bg-white/30 transition-colors">
-                      <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-                      <span className="font-semibold">4.8</span>
-                      <span className="opacity-70">(128 reviews)</span>
-                    </span>
-
-                    <span className="flex items-center gap-1.5 text-sm bg-green-500/30 backdrop-blur-sm px-3.5 py-1.5 rounded-full border border-green-400/30 text-white">
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                      {isOpen ? "Open Now" : "Closed"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Action Buttons - Premium Style */}
-                <div className="flex flex-col sm:flex-row gap-2 lg:gap-3 shrink-0">
-                  <Link
-                    href={"/owner/restaurant"}
-                    target="_blank"
-                    className="px-5 py-2.5 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white text-sm font-medium rounded-2xl transition-all border border-white/20 flex items-center gap-2 hover:scale-105 hover:shadow-xl"
-                  >
-                    <Eye className="w-4 h-4" />
-                    View Store
-                  </Link>
-                </div>
-              </div>
-
-              {/* Status Message - Enhanced */}
-              {restaurant.status !== "approved" && (
-                <div className="mt-4 p-4 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 backdrop-blur-sm rounded-2xl border border-yellow-500/30 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-yellow-500/30 flex items-center justify-center shrink-0">
-                    <AlertCircle className="w-5 h-5 text-yellow-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-white">
-                      {status.message}
-                    </p>
-                    <p className="text-xs text-white/70 mt-0.5">
-                      Contact support if you need assistance
-                    </p>
-                  </div>
-                  <button className="ml-auto px-4 py-1.5 bg-white/20 hover:bg-white/30 text-white text-xs font-medium rounded-xl transition-colors">
-                    Learn More
-                  </button>
-                </div>
-              )}
-            </div>
+<div className="relative -mt-20 px-6 pb-6">
+  <div className="bg-white/90 backdrop-blur-xl rounded-3xl border border-white/20 p-6 shadow-2xl">
+    <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+      {/* Restaurant Avatar - Larger with glow */}
+      <div className="flex items-center gap-5">
+        <div className="relative">
+          <div className="w-28 h-28 rounded-2xl border-4 border-white shadow-2xl bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center overflow-hidden ring-4 ring-orange-500/30">
+            {restaurant.logo ? (
+              <Image
+                src={restaurant.logo}
+                alt={restaurant.restaurantName}
+                width={112}
+                height={112}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Store className="w-12 h-12 text-white" />
+            )}
           </div>
+          {/* Online Status Badge */}
+          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center">
+            <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse" />
+          </div>
+        </div>
+
+        <div className="lg:hidden">
+          <h1 className="text-2xl font-bold text-gray-900">
+            {restaurant.restaurantName}
+          </h1>
+        </div>
+      </div>
+
+      {/* Restaurant Info */}
+      <div className="flex-1 min-w-0">
+        <h1 className="hidden lg:block text-3xl font-bold text-gray-900 mb-3">
+          {restaurant.restaurantName}
+        </h1>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="flex items-center gap-1.5 text-sm bg-gray-100 hover:bg-gray-200 px-3.5 py-1.5 rounded-full border border-gray-200 text-gray-700 transition-colors">
+            <MapPin className="w-3.5 h-3.5 text-gray-500" />
+            {restaurant.location || "Location not set"}
+          </span>
+
+          <span className="flex items-center gap-1.5 text-sm bg-gray-100 hover:bg-gray-200 px-3.5 py-1.5 rounded-full border border-gray-200 text-gray-700 transition-colors">
+            <ShoppingBag className="w-3.5 h-3.5 text-gray-500" />
+            <span className="font-semibold">{totalOrders || 0}</span>
+            <span className="text-gray-500">orders</span>
+          </span>
+
+          <span className="flex items-center gap-1.5 text-sm bg-gray-100 hover:bg-gray-200 px-3.5 py-1.5 rounded-full border border-gray-200 text-gray-700 transition-colors">
+            <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+            <span className="font-semibold">4.8</span>
+            <span className="text-gray-500">(128 reviews)</span>
+          </span>
+
+          <span className={`flex items-center gap-1.5 text-sm px-3.5 py-1.5 rounded-full border transition-colors ${
+            isOpen 
+              ? 'bg-green-100 hover:bg-green-200 border-green-200 text-green-700' 
+              : 'bg-red-100 hover:bg-red-200 border-red-200 text-red-700'
+          }`}>
+            <div className={`w-2 h-2 rounded-full ${isOpen ? 'bg-green-500' : 'bg-red-500'} animate-pulse`} />
+            {isOpen ? "Open Now" : "Closed"}
+          </span>
+        </div>
+      </div>
+
+      {/* Action Buttons - Premium Style */}
+      <div className="flex flex-col sm:flex-row gap-2 lg:gap-3 shrink-0">
+        <Link
+          href={"/owner/restaurant"}
+          target="_blank"
+          className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-sm font-medium rounded-2xl transition-all flex items-center gap-2 hover:scale-105 hover:shadow-xl shadow-lg shadow-orange-500/25"
+        >
+          <Eye className="w-4 h-4" />
+          View Store
+        </Link>
+      </div>
+    </div>
+
+    {/* Status Message - Enhanced */}
+    {restaurant.status !== "approved" && (
+      <div className="mt-4 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 backdrop-blur-sm rounded-2xl border border-yellow-200 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center shrink-0">
+          <AlertCircle className="w-5 h-5 text-yellow-600" />
+        </div>
+        <div>
+          <p className="text-sm font-medium text-gray-800">
+            {status.message}
+          </p>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Contact support if you need assistance
+          </p>
+        </div>
+        <button className="ml-auto px-4 py-1.5 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 text-xs font-medium rounded-xl transition-colors">
+          Learn More
+        </button>
+      </div>
+    )}
+  </div>
+</div>
         </div>
 
         {/* Stats Grid */}
@@ -612,7 +619,7 @@ export default function OwnerDashboardPage() {
           <StatCard
             icon={UtensilsCrossed}
             label="Total Menu Items"
-            value={foodsLoading ? "—" : totalItems}
+            value={foodsLoading ? "—" : foods.length}
             subtitle={`${availableCount} available`}
             color="orange"
           />

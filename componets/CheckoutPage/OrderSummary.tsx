@@ -35,13 +35,13 @@ export const OrderSummary = ({
       </div>
 
       <div className="mt-6">
-       <textarea
-  value={address}
-  onChange={(e) => setAddress(e.target.value)}
-  placeholder="Enter your delivery address"
-  rows={4}
-  className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 resize-none transition-all placeholder-gray-600 text-black"
-/>
+        <textarea
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          placeholder="Enter your delivery address"
+          rows={4}
+          className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 resize-none transition-all placeholder-gray-600 text-black"
+        />
         <p className="text-xs text-gray-400 mt-1">Minimum 5 characters</p>
       </div>
 

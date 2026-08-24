@@ -1,4 +1,3 @@
-// components/layout/BubbleBackground.tsx (Pure CSS bubbles)
 "use client";
 
 import { useEffect, useRef } from "react";

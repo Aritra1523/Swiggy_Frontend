@@ -126,14 +126,36 @@ const OrderDetailsSkeleton = () => (
 );
 
 // Status Timeline Component
-const StatusTimeline = ({ status, createdAt }: { status: string; createdAt: string }) => {
+const StatusTimeline = ({
+  status,
+  createdAt,
+}: {
+  status: string;
+  createdAt: string;
+}) => {
   const config = STATUS_CONFIG[status] || STATUS_CONFIG.placed;
   const steps = [
     { label: "Order Placed", icon: Clock, time: createdAt },
-    { label: "Order Accepted", icon: CheckCircle2, time: status === "placed" ? null : createdAt },
-    { label: "Preparing", icon: ChefHat, time: status === "preparing" ? "Currently" : null },
-    { label: "Out for Delivery", icon: Bike, time: status === "out_for_delivery" ? "On the way" : null },
-    { label: "Delivered", icon: CheckCircle2, time: status === "delivered" ? "Delivered" : null },
+    {
+      label: "Order Accepted",
+      icon: CheckCircle2,
+      time: status === "placed" ? null : createdAt,
+    },
+    {
+      label: "Preparing",
+      icon: ChefHat,
+      time: status === "preparing" ? "Currently" : null,
+    },
+    {
+      label: "Out for Delivery",
+      icon: Bike,
+      time: status === "out_for_delivery" ? "On the way" : null,
+    },
+    {
+      label: "Delivered",
+      icon: CheckCircle2,
+      time: status === "delivered" ? "Delivered" : null,
+    },
   ];
 
   const currentStepIndex = steps.findIndex((_, index) => {
@@ -152,7 +174,10 @@ const StatusTimeline = ({ status, createdAt }: { status: string; createdAt: stri
         const Icon = step.icon;
 
         return (
-          <div key={index} className="relative flex items-start gap-4 pb-8 last:pb-0">
+          <div
+            key={index}
+            className="relative flex items-start gap-4 pb-8 last:pb-0"
+          >
             {/* Line connector */}
             {index < steps.length - 1 && (
               <div
@@ -168,8 +193,8 @@ const StatusTimeline = ({ status, createdAt }: { status: string; createdAt: stri
                 isCurrent
                   ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30 ring-4 ring-orange-100"
                   : isCompleted
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-200 text-gray-400"
+                    ? "bg-green-500 text-white"
+                    : "bg-gray-200 text-gray-400"
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -178,17 +203,23 @@ const StatusTimeline = ({ status, createdAt }: { status: string; createdAt: stri
             {/* Content */}
             <div className="flex-1 pt-1">
               <div className="flex items-center justify-between">
-                <h4 className={`font-semibold ${isCompleted ? "text-gray-900" : "text-gray-400"}`}>
+                <h4
+                  className={`font-semibold ${isCompleted ? "text-gray-900" : "text-gray-400"}`}
+                >
                   {step.label}
                 </h4>
                 {step.time && (
-                  <span className={`text-xs ${isCompleted ? "text-gray-500" : "text-gray-400"}`}>
+                  <span
+                    className={`text-xs ${isCompleted ? "text-gray-500" : "text-gray-400"}`}
+                  >
                     {step.time}
                   </span>
                 )}
               </div>
               {isCurrent && status !== "delivered" && (
-                <p className="text-xs text-orange-600 font-medium mt-0.5">In Progress</p>
+                <p className="text-xs text-orange-600 font-medium mt-0.5">
+                  In Progress
+                </p>
               )}
             </div>
           </div>
@@ -222,7 +253,9 @@ const InfoCard = ({
 
   return (
     <div className="flex items-start gap-3">
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${colors[color]}`}>
+      <div
+        className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${colors[color]}`}
+      >
         <Icon className="w-4 h-4" />
       </div>
       <div>
@@ -303,7 +336,9 @@ export default function OrderDetailsPage() {
           <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-10 h-10 text-red-500" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Unable to Load Order</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Unable to Load Order
+          </h2>
           <p className="text-red-500 text-sm">{orderError}</p>
           <button
             onClick={() => router.back()}
@@ -324,8 +359,12 @@ export default function OrderDetailsPage() {
           <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Package className="w-10 h-10 text-gray-400" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Order Not Found</h2>
-          <p className="text-gray-500 text-sm">The order you're looking for doesn't exist or has been removed.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Order Not Found
+          </h2>
+          <p className="text-gray-500 text-sm">
+            The order you're looking for doesn't exist or has been removed.
+          </p>
           <Link
             href="/Order"
             className="inline-block mt-6 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-xl transition-all"
@@ -337,10 +376,8 @@ export default function OrderDetailsPage() {
     );
   }
 
-  const totalItems = selectedOrder.items?.reduce(
-    (total, item) => total + item.quantity,
-    0,
-  ) || 0;
+  const totalItems =
+    selectedOrder.items?.reduce((total, item) => total + item.quantity, 0) || 0;
 
   const status = STATUS_CONFIG[selectedOrder.status] || STATUS_CONFIG.placed;
   const StatusIcon = status.icon;
@@ -392,13 +429,15 @@ export default function OrderDetailsPage() {
                     <Receipt className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400 font-medium">Order ID</p>
+                    <p className="text-xs text-gray-400 font-medium">
+                      Order ID
+                    </p>
                     <h1 className="font-bold text-xl text-gray-900 font-mono tracking-tight">
                       #{selectedOrder._id.slice(-8).toUpperCase()}
                     </h1>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-4 mt-3 flex-wrap">
                   <span className="flex items-center gap-1.5 text-sm text-gray-500">
                     <Calendar className="w-3.5 h-3.5" />
@@ -432,11 +471,43 @@ export default function OrderDetailsPage() {
                   />
                 </div>
                 <div className="flex justify-between text-xs text-gray-400 mt-2">
-                  <span className={status.progress >= 20 ? "text-orange-600 font-medium" : ""}>Placed</span>
-                  <span className={status.progress >= 40 ? "text-orange-600 font-medium" : ""}>Accepted</span>
-                  <span className={status.progress >= 60 ? "text-orange-600 font-medium" : ""}>Preparing</span>
-                  <span className={status.progress >= 85 ? "text-orange-600 font-medium" : ""}>Out for Delivery</span>
-                  <span className={status.progress >= 100 ? "text-orange-600 font-medium" : ""}>Delivered</span>
+                  <span
+                    className={
+                      status.progress >= 20 ? "text-orange-600 font-medium" : ""
+                    }
+                  >
+                    Placed
+                  </span>
+                  <span
+                    className={
+                      status.progress >= 40 ? "text-orange-600 font-medium" : ""
+                    }
+                  >
+                    Accepted
+                  </span>
+                  <span
+                    className={
+                      status.progress >= 60 ? "text-orange-600 font-medium" : ""
+                    }
+                  >
+                    Preparing
+                  </span>
+                  <span
+                    className={
+                      status.progress >= 85 ? "text-orange-600 font-medium" : ""
+                    }
+                  >
+                    Out for Delivery
+                  </span>
+                  <span
+                    className={
+                      status.progress >= 100
+                        ? "text-orange-600 font-medium"
+                        : ""
+                    }
+                  >
+                    Delivered
+                  </span>
                 </div>
               </div>
             )}
@@ -447,7 +518,9 @@ export default function OrderDetailsPage() {
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8 mb-4">
           <div className="flex items-center gap-2 mb-4">
             <Store className="w-5 h-5 text-orange-500" />
-            <h2 className="text-lg font-bold text-gray-900">Restaurant Details</h2>
+            <h2 className="text-lg font-bold text-gray-900">
+              Restaurant Details
+            </h2>
           </div>
 
           <div className="flex items-start gap-4">
@@ -540,7 +613,9 @@ export default function OrderDetailsPage() {
                       </h3>
                     </div>
                     <div className="flex items-center gap-3 text-sm text-gray-500 mt-0.5">
-                      <span>₹{item.price.toFixed(2)} × {item.quantity}</span>
+                      <span>
+                        ₹{item.price.toFixed(2)} × {item.quantity}
+                      </span>
                       {item.variant && (
                         <>
                           <span className="w-1 h-1 bg-gray-300 rounded-full" />
@@ -565,7 +640,9 @@ export default function OrderDetailsPage() {
           <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
             <div className="flex items-center gap-2 mb-4">
               <MapPin className="w-5 h-5 text-blue-500" />
-              <h2 className="text-lg font-bold text-gray-900">Delivery Address</h2>
+              <h2 className="text-lg font-bold text-gray-900">
+                Delivery Address
+              </h2>
             </div>
 
             <div className="space-y-3">
@@ -578,7 +655,9 @@ export default function OrderDetailsPage() {
                     {selectedOrder.user?.name || "Customer"}
                   </p>
                   {selectedOrder.user?.phone && (
-                    <p className="text-sm text-gray-500">{selectedOrder.user.phone}</p>
+                    <p className="text-sm text-gray-500">
+                      {selectedOrder.user.phone}
+                    </p>
                   )}
                 </div>
               </div>
@@ -635,7 +714,9 @@ export default function OrderDetailsPage() {
 
               <div className="border-t border-gray-200 pt-3 mt-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-base font-bold text-gray-900">Total</span>
+                  <span className="text-base font-bold text-gray-900">
+                    Total
+                  </span>
                   <span className="text-2xl font-bold text-orange-600">
                     ₹{selectedOrder.totalAmount.toFixed(2)}
                   </span>
@@ -653,8 +734,13 @@ export default function OrderDetailsPage() {
                 <AlertCircle className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-red-800 text-lg">Cancel this order?</p>
-                <p className="text-sm text-red-600 mt-1">This action cannot be undone. The order will be permanently cancelled.</p>
+                <p className="font-semibold text-red-800 text-lg">
+                  Cancel this order?
+                </p>
+                <p className="text-sm text-red-600 mt-1">
+                  This action cannot be undone. The order will be permanently
+                  cancelled.
+                </p>
                 <div className="flex gap-3 mt-4">
                   <button
                     onClick={cancelThisOrder}

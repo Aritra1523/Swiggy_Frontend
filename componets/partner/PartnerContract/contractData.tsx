@@ -6,13 +6,13 @@ export const sections = [
     content: (
       <>
         <p className="text-sm text-slate-600 leading-relaxed">
-          This Restaurant Partner Agreement ("Agreement") is entered into between <strong>Aritra Technologies Pvt. Ltd.</strong> operating as Swiggy ("Swiggy"), and the Restaurant Partner named in the onboarding form ("Partner").
+          This Restaurant Partner Agreement ("Agreement") is entered into between <strong>Aritra Technologies Pvt. Ltd.</strong> operating as Hungrly ("Hungrly"), and the Restaurant Partner named in the onboarding form ("Partner").
         </p>
         <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-          By completing the onboarding process, the Partner agrees to list their restaurant on the Swiggy platform and fulfill orders placed by consumers through the app and website. This is a <strong>non-exclusive agreement</strong> — the Partner may operate on other platforms simultaneously.
+          By completing the onboarding process, the Partner agrees to list their restaurant on the Hungrly platform and fulfill orders placed by consumers through the app and website. This is a <strong>non-exclusive agreement</strong> — the Partner may operate on other platforms simultaneously.
         </p>
         <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-          The Partner acknowledges that Swiggy operates as a technology intermediary and marketplace, and does not take ownership of food items at any point in the fulfillment process.
+          The Partner acknowledges that Hungrly operates as a technology intermediary and marketplace, and does not take ownership of food items at any point in the fulfillment process.
         </p>
       </>
     ),
@@ -24,7 +24,7 @@ export const sections = [
     content: (
       <>
         <p className="text-sm text-slate-600 leading-relaxed">
-          Swiggy shall charge a commission fee on each order placed through the platform. The commission structure is as follows:
+          Hungrly shall charge a commission fee on each order placed through the platform. The commission structure is as follows:
         </p>
         <ul className="mt-2 space-y-1 text-sm text-slate-600 list-disc list-inside">
           <li>Commission rate: <strong>15-25%</strong> of the order value (based on category and location)</li>
@@ -33,7 +33,7 @@ export const sections = [
           <li>GST and TDS will be deducted as applicable by law</li>
         </ul>
         <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-          The Partner shall receive payments after deduction of applicable commissions, taxes, and charges. Swiggy reserves the right to modify the commission structure with prior notice.
+          The Partner shall receive payments after deduction of applicable commissions, taxes, and charges. Hungrly reserves the right to modify the commission structure with prior notice.
         </p>
       </>
     ),
@@ -51,7 +51,7 @@ export const sections = [
           <li>Accept and fulfill orders within <strong>5 minutes</strong> of receiving them</li>
           <li>Ensure order readiness within the promised delivery time</li>
           <li>Maintain minimum hygiene and food safety standards</li>
-          <li>Use Swiggy-approved packaging materials</li>
+          <li>Use Hungrly-approved packaging materials</li>
           <li>Maintain real-time inventory updates on the platform</li>
         </ul>
       </>
@@ -64,10 +64,10 @@ export const sections = [
     content: (
       <>
         <p className="text-sm text-slate-600 leading-relaxed">
-          The Partner grants Swiggy a non-exclusive, royalty-free license to use the Partner's name, logo, and menu items for promotional purposes on the platform. All intellectual property rights remain with the respective owners.
+          The Partner grants Hungrly a non-exclusive, royalty-free license to use the Partner's name, logo, and menu items for promotional purposes on the platform. All intellectual property rights remain with the respective owners.
         </p>
         <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-          The Partner retains all rights to their recipes, branding, and proprietary information. Swiggy shall not claim ownership over any intellectual property of the Partner.
+          The Partner retains all rights to their recipes, branding, and proprietary information. Hungrly shall not claim ownership over any intellectual property of the Partner.
         </p>
       </>
     ),
@@ -79,7 +79,7 @@ export const sections = [
     content: (
       <>
         <p className="text-sm text-slate-600 leading-relaxed">
-          Swiggy collects and processes Partner data in compliance with applicable data protection laws. Partner information shall be used only for operational, analytical, and communication purposes.
+          Hungrly collects and processes Partner data in compliance with applicable data protection laws. Partner information shall be used only for operational, analytical, and communication purposes.
         </p>
         <ul className="mt-2 space-y-1 text-sm text-slate-600 list-disc list-inside">
           <li>Customer data shall not be used for any purpose outside of order fulfillment</li>
@@ -96,7 +96,7 @@ export const sections = [
     content: (
       <>
         <p className="text-sm text-slate-600 leading-relaxed">
-          Either party may terminate this agreement with <strong>30 days</strong> written notice. Swiggy reserves the right to terminate immediately in case of:
+          Either party may terminate this agreement with <strong>30 days</strong> written notice. Hungrly reserves the right to terminate immediately in case of:
         </p>
         <ul className="mt-2 space-y-1 text-sm text-slate-600 list-disc list-inside">
           <li>Breach of operational guidelines</li>

@@ -1,10 +1,10 @@
-import CheckoutPage from '@/componets/CheckoutPage/CheckoutPage'
+import RestaruntList from '@/componets/restaruntList/restaruntList'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-        <CheckoutPage/>
+        <RestaruntList/>
     </div>
   )
 }

@@ -19,8 +19,15 @@ export default function CheckoutPage() {
   const [placingOrder, setPlacingOrder] = useState(false);
 
   const items = cart?.items || [];
-  const totalItems = items.reduce((total, item) => total + Number(item.quantity || 0), 0);
-  const totalAmount = items.reduce((total, item) => total + Number(item.price || 0) * Number(item.quantity || 0), 0);
+  const totalItems = items.reduce(
+    (total, item) => total + Number(item.quantity || 0),
+    0,
+  );
+  const totalAmount = items.reduce(
+    (total, item) =>
+      total + Number(item.price || 0) * Number(item.quantity || 0),
+    0,
+  );
 
   const handlePlaceOrderClick = async () => {
     const trimmedAddress = address.trim();
@@ -33,42 +40,42 @@ export default function CheckoutPage() {
       return;
     }
 
-   // First, confirm with user
-const result = await Swal.fire({
-  title: 'Confirm Order',
-  text: 'Are you sure you want to place this order?',
-  icon: 'question',
-  showCancelButton: true,
-  confirmButtonColor: '#3085d6',
-  cancelButtonColor: '#d33',
-  confirmButtonText: 'Yes, Place Order!',
-  cancelButtonText: 'Cancel'
-});
+    // First, confirm with user
+    const result = await Swal.fire({
+      title: "Confirm Order",
+      text: "Are you sure you want to place this order?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Place Order!",
+      cancelButtonText: "Cancel",
+    });
 
-if (result.isConfirmed) {
-  try {
-    setPlacingOrder(true);
-    await handlePlaceOrder({ address: trimmedAddress });
-    
-    await Swal.fire({
-      icon: 'success',
-      title: 'Order Placed!',
-      text: 'Your order has been successfully placed.',
-      timer: 1500,
-      showConfirmButton: false
-    });
-    
-    router.push("/Order");
-  } catch (error) {
-    await Swal.fire({
-      icon: 'error',
-      title: 'Order Failed',
-      text: error?.message || "Failed to place order"
-    });
-  } finally {
-    setPlacingOrder(false);
-  }
-}
+    if (result.isConfirmed) {
+      try {
+        setPlacingOrder(true);
+        await handlePlaceOrder({ address: trimmedAddress });
+
+        await Swal.fire({
+          icon: "success",
+          title: "Order Placed!",
+          text: "Your order has been successfully placed.",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        router.push("/Order");
+      } catch (error) {
+        await Swal.fire({
+          icon: "error",
+          title: "Order Failed",
+          text: error?.message || "Failed to place order",
+        });
+      } finally {
+        setPlacingOrder(false);
+      }
+    }
   };
 
   if (cartLoading) return <LoadingSpinner />;

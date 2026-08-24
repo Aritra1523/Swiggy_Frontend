@@ -1,4 +1,3 @@
-// components/food/FoodFilters.tsx
 "use client";
 
 import { useState } from "react";

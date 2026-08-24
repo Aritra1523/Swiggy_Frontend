@@ -1,4 +1,3 @@
-// constants/foodConstants.ts
 import { OwnerFood } from "@/typescript/restaurantOwner/restaurantOwner";
 import { Salad, Beef, Cake, Wine, Pizza } from "lucide-react";
 
