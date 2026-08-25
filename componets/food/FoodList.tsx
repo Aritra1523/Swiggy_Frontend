@@ -6,6 +6,7 @@ import FoodCard from "./foodCard";
 import FoodSkeleton from "./FoodSkeleton";
 import FoodFilters from "./FoodFilters";
 import { socket } from "@/lib/socket/socket";
+import Swal from "sweetalert2";
 
 export default function FoodList() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -27,14 +28,42 @@ export default function FoodList() {
       alert(`${data.restaurantName} is ${data.isOpen ? "OPEN" : "CLOSED"}`);
     };
 
-    const handleFoodStatus = (data: any) => {
-      console.log("Food:", data);
-      alert(
-        `${data.itemName} is ${
-          data.isAvailable ? "Available" : "Out Of Stock"
-        }`,
-      );
-    };
+  const handleFoodStatus = (data: any) => {
+  console.log("Food:", data);
+  
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 4000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    }
+  });
+
+  Toast.fire({
+    icon: data.isAvailable ? "success" : "error",
+    title: data.isAvailable ? "✅ Available" : "❌ Out of Stock",
+    html: `
+      <div style="text-align: center; padding: 2px 0;">
+        <p style="font-size: 15px; font-weight: 600; margin: 0; color: #1f2937;">
+          ${data.itemName}
+        </p>
+        <p style="font-size: 12px; margin: 2px 0 0 0; 
+          color: ${data.isAvailable ? '#16a34a' : '#dc2626'}; 
+          font-weight: 500;">
+          ${data.isAvailable ? "🟢 Available" : "🔴 Out of Stock"}
+        </p>
+      </div>
+    `,
+    background: '#ffffff',
+    iconColor: data.isAvailable ? '#22c55e' : '#ef4444',
+    width: 320,
+    padding: '12px',
+  });
+};
 
     socket.on("connect", handleConnect);
     socket.on("restaurant:status", handleRestaurantStatus);
@@ -46,7 +75,6 @@ export default function FoodList() {
       socket.disconnect();
     };
   }, []);
-  // Filter and sort foods
   const filteredFoods = useMemo(() => {
     if (!foods.length) return [];
 
@@ -102,9 +130,6 @@ export default function FoodList() {
     );
   }
 
-
-
-  
   if (!foods.length) {
     return (
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

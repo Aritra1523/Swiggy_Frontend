@@ -48,35 +48,6 @@ export default function OrdersPage() {
     handleFetchMyOrders();
   }, []);
 
-  // ---- Socket: live order status updates ----
-  useEffect(() => {
-    // Connect to socket
-    socket.connect();
-
-    const handleConnect = () => {
-      console.log("Connected:", socket.id);
-    };
-
-    const handleOrderStatus = (data: any) => {
-      console.log("Order status update:", data);
-      // Refetch orders to get the updated status
-      handleFetchMyOrders();
-      // alert("hiii")
-    };
-
-    // Register event listeners
-    socket.on("connect", handleConnect);
-    socket.on("order:status", handleOrderStatus);
-
-    // Cleanup on unmount
-    return () => {
-      socket.off("connect", handleConnect);
-      socket.off("order:status", handleOrderStatus);
-      socket.disconnect();
-    };
-  }, []); // Empty dependency array ensures this runs once
-
-  // ✅ Updated statusConfig with all statuses including out_for_delivery
   const statusConfig = {
     placed: {
       icon: Clock,
