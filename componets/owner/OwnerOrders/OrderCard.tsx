@@ -11,6 +11,7 @@ import {
   PackageCheck,
   IndianRupee,
 } from "lucide-react";
+import Swal from "sweetalert2";
 
 type OrderStatus =
   | "placed"
@@ -140,18 +141,95 @@ export function OrderCard({ order }: { order: OwnerOrder }) {
     });
   };
 
-  const handleCancel = () => {
-    if (!isValidTransition(currentStatus, "cancelled")) {
-      return;
-    }
+  // const handleCancel = () => {
+  //   if (!isValidTransition(currentStatus, "cancelled")) {
+  //     return;
+  //   }
 
-    if (window.confirm("Cancel this order?")) {
+  //   if (window.confirm("Cancel this order?")) {
+  //     updateStatus({
+  //       id: order._id,
+  //       status: "cancelled",
+  //     });
+  //   }
+  // };
+  const handleCancel = () => {
+  if (!isValidTransition(currentStatus, "cancelled")) {
+    // Show error toast if cancellation is not allowed
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+
+    Toast.fire({
+      icon: "error",
+      title: "Cannot Cancel Order",
+      text: `Order cannot be cancelled in "${currentStatus}" status`,
+      background: "#ffffff",
+      iconColor: "#ef4444",
+    });
+    return;
+  }
+
+  // Show confirmation dialog with SweetAlert
+  Swal.fire({
+    title: "Cancel Order?",
+    text: `Are you sure you want to cancel this order? This action cannot be undone.`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#ef4444",
+    cancelButtonColor: "#6b7280",
+    confirmButtonText: "Yes, Cancel Order",
+    cancelButtonText: "Keep Order",
+    reverseButtons: true,
+    background: "#ffffff",
+    customClass: {
+      popup: "rounded-2xl",
+      title: "text-xl font-bold text-gray-900",
+      htmlContainer: "text-gray-600",
+      confirmButton: "px-6 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-all duration-200",
+      cancelButton: "px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-200",
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Show loading state
+      Swal.fire({
+        title: "Cancelling Order...",
+        text: "Please wait while we process your request",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      // Call the update status function
       updateStatus({
         id: order._id,
         status: "cancelled",
       });
+
+      // Success notification (this will be shown after the update completes)
+      // You can move this to the success callback of updateStatus
+      Swal.fire({
+        icon: "success",
+        title: "Order Cancelled",
+        text: "Your order has been cancelled successfully",
+        timer: 2000,
+        showConfirmButton: false,
+        customClass: {
+          popup: "rounded-2xl",
+        },
+      });
     }
-  };
+  });
+};
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-5">
