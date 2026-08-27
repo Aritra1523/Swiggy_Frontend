@@ -23,9 +23,7 @@ import {
   VerifyOtpResponse,
 } from "@/typescript/auth/Otp";
 
-// ============================================
 // INITIAL STATE
-// ============================================
 
 const initialState: AuthState = {
   loading: false,
@@ -35,9 +33,7 @@ const initialState: AuthState = {
   refreshToken: null,
 };
 
-// ============================================
 // REGISTER
-// ============================================
 
 export const registerUser = createAsyncThunk<
   RegisterResponse,
@@ -62,9 +58,7 @@ export const registerUser = createAsyncThunk<
   }
 );
 
-// ============================================
 // LOGIN
-// ============================================
 
 export const loginUser = createAsyncThunk<
   LoginResponse,
@@ -94,9 +88,7 @@ export const loginUser = createAsyncThunk<
   }
 );
 
-// ============================================
 // VERIFY OTP
-// ============================================
 
 export const verifyOtp = createAsyncThunk<
   VerifyOtpResponse,
@@ -126,9 +118,7 @@ export const verifyOtp = createAsyncThunk<
   }
 );
 
-// ============================================
 // AUTH SLICE
-// ============================================
 
 const authSlice = createSlice({
   name: "auth",
@@ -136,9 +126,9 @@ const authSlice = createSlice({
   initialState,
 
   reducers: {
-    // ========================================
+ 
     // HYDRATE USER
-    // ========================================
+ 
 
     hydrateUser: (
       state,
@@ -147,9 +137,9 @@ const authSlice = createSlice({
       state.user = action.payload;
     },
 
-    // ========================================
+ 
     // LOGOUT
-    // ========================================
+ 
 
     logout: (state) => {
       state.user = null;
@@ -163,9 +153,9 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
 
-      // ======================================
+     
       // REGISTER
-      // ======================================
+     
 
       .addCase(
         registerUser.pending,
@@ -197,9 +187,9 @@ const authSlice = createSlice({
         }
       )
 
-      // ======================================
+     
       // VERIFY OTP - PENDING
-      // ======================================
+     
 
       .addCase(
         verifyOtp.pending,
@@ -264,9 +254,9 @@ const authSlice = createSlice({
         }
       )
 
-      // ======================================
+     
       // LOGIN - SUCCESS
-      // ======================================
+     
 
       .addCase(
         loginUser.fulfilled,

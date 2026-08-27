@@ -8,7 +8,7 @@ import { AppDispatch, RootState } from "@/redux/store/store";
 import {
   addToCart,
   fetchCart,
-  deleteCartItem, // this is really "decrementOrRemoveLast"
+  deleteCartItem,
 } from "@/redux/slice/order/order";
 
 import { AddCartPayload } from "@/typescript/order/order";

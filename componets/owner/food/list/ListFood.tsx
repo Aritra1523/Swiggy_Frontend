@@ -683,22 +683,25 @@ export default function OwnerFoodListPage() {
               <div className="h-12 bg-gray-200 rounded-xl w-40" />
             </div>
           </div>
-          
+
           {/* Stats Skeleton */}
           <div className="grid grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-24 bg-white rounded-2xl border border-gray-100 p-5 animate-pulse">
+              <div
+                key={i}
+                className="h-24 bg-white rounded-2xl border border-gray-100 p-5 animate-pulse"
+              >
                 <div className="h-4 bg-gray-200 rounded w-24" />
                 <div className="h-8 bg-gray-200 rounded w-12 mt-2" />
               </div>
             ))}
           </div>
-          
+
           {/* Search Skeleton */}
           <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
             <div className="h-12 bg-gray-200 rounded-xl" />
           </div>
-          
+
           {[1, 2, 3, 4].map((i) => (
             <FoodCardSkeleton key={i} />
           ))}

@@ -12,8 +12,8 @@ export default function Home() {
       <Navbar />
       <HeroSection />
       <FeaturesSection />
-      <FoodList/>
-      {/* <RestaruntList /> */}
+      {/* <FoodList/> */}
+      <RestaruntList />
       
       
       <Footer/>

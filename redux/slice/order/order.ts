@@ -194,29 +194,7 @@ export const cancelOrder = createAsyncThunk<
   }
 });
 
-//Update Order Status
 
-// export const updateOrderStatus = createAsyncThunk<
-//   OrderResponse,
-//   {
-//     id: string;
-//     data: UpdateOrderStatusPayload;
-//   },
-//   { rejectValue: string }
-// >("order/updateOrderStatus", async ({ id, data }, { rejectWithValue }) => {
-//   try {
-//     const response = await axiosInstance.put<OrderResponse>(
-//       endpoints.updateOrderStatus(id),
-//       data,
-//     );
-
-//     return response.data;
-//   } catch (error: any) {
-//     return rejectWithValue(
-//       error.response?.data?.message || "Failed to update order status",
-//     );
-//   }
-// });
 
 const orderSlice = createSlice({
   name: "order",

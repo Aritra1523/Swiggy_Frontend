@@ -4,8 +4,8 @@ export const endpoints = {
   otp: "/auth/otp",
 
   //user
-  restaurantList:"/user/restaurant-list",
-  restaurantFood:(restaurantId:string)=>`/user/restaurant/${restaurantId}/foods`,
+  restaurantList: "/user/restaurant-list",
+  restaurantFood: (restaurantId: string) => `/user/restaurant/${restaurantId}/foods`,
   foodList: "/user/food_list",
 
   addCart: "/add/cart",
@@ -31,9 +31,6 @@ export const endpoints = {
   partnerCOntract: "/partner-contract",
   restaurantResendOtp: "/restaurant/resend-otp",
 
-
-
-  
   //OWNER
 
   restaurantDetails: "/restaurant/details",

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useDeleteFood } from "@/customHooks/owner/useFoodManagement";
 import { Trash2, AlertTriangle, X, Utensils, Loader2 } from "lucide-react";
+import Swal from 'sweetalert2';
 
 interface DeleteFoodModalProps {
   foodId: string;
@@ -58,7 +59,38 @@ export default function DeleteFoodModal({
   const handleDelete = () => {
     deleteFood.mutate(foodId, {
       onSuccess: () => {
+        // Close the modal first
         onClose();
+        
+        // Show SweetAlert success message
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted Successfully! 🗑️',
+          text: `"${foodName}" has been removed from your menu.`,
+          timer: 2500,
+          timerProgressBar: true,
+          showConfirmButton: true,
+          confirmButtonColor: '#ef4444',
+          confirmButtonText: 'Got it!',
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl',
+            confirmButton: 'px-6 py-2.5 text-sm font-semibold rounded-xl',
+          },
+        });
+      },
+      onError: (error: any) => {
+        // Show error message if deletion fails
+        Swal.fire({
+          icon: 'error',
+          title: 'Deletion Failed',
+          text: error?.response?.data?.message || 'There was an error deleting the item. Please try again.',
+          confirmButtonColor: '#ef4444',
+          confirmButtonText: 'Try Again',
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl',
+            confirmButton: 'px-6 py-2.5 text-sm font-semibold rounded-xl',
+          },
+        });
       },
     });
   };

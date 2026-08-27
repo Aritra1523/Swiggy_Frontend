@@ -20,14 +20,7 @@ type OrderStatus =
   | "delivered"
   | "cancelled";
 
-/**
- * Backend transition:
- *
- * placed -> accepted
- * accepted -> preparing
- * preparing -> out_for_delivery
- * out_for_delivery -> delivered
- */
+
 const ORDER_STATUS_FLOW: Partial<Record<OrderStatus, OrderStatus>> = {
   placed: "accepted",
   accepted: "preparing",
@@ -35,13 +28,7 @@ const ORDER_STATUS_FLOW: Partial<Record<OrderStatus, OrderStatus>> = {
   out_for_delivery: "delivered",
 };
 
-/**
- * Backend allows cancellation from:
- *
- * placed
- * accepted
- * preparing
- */
+
 const VALID_CANCELLATION_STATUSES: OrderStatus[] = [
   "placed",
   "accepted",

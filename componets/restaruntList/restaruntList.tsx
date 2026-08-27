@@ -36,41 +36,17 @@ import {
   Users,
   Sun,
   Moon,
+  Pizza,
+  Sandwich,
+  Cake,
+  Coffee as CoffeeIcon,
+  IceCream,
+  Wine,
 } from "lucide-react";
+import { socket } from "@/lib/socket/socket";
+import Swal from "sweetalert2";
+import {Restaurant} from "@/typescript/userRestarunt/restarunt"
 
-// ============== Type Definitions ==============
-interface Restaurant {
-  _id: string;
-  restaurantName: string;
-  location: string;
-  outletType: string;
-  isOpen: boolean;
-  status: string;
-  workingDays: string[];
-  openingClosing: {
-    sameForAllDays: boolean;
-    slots: Array<{
-      open: string;
-      close: string;
-      _id: string;
-    }>;
-  };
-  rating?: number;
-  totalRatings?: number;
-  deliveryTime?: string;
-  minimumOrder?: number;
-  cuisine?: string[];
-  image?: string;
-  banner?: string;
-  isFeatured?: boolean;
-  isTrending?: boolean;
-  isNew?: boolean;
-  distance?: string;
-  discount?: string;
-  offers?: string[];
-  averageCost?: number;
-  isFavorite?: boolean;
-}
 
 // ============== Constants ==============
 const OUTLET_TYPES = [
@@ -89,7 +65,271 @@ const SORT_OPTIONS = [
   { value: "name", label: "Name A-Z", icon: Store },
 ];
 
+// Hero Carousel Images (Food categories with random images)
+const HERO_SLIDES = [
+  {
+    id: 1,
+    title: "Pizza Delivery",
+    subtitle: "Hot & Fresh Pizzas",
+    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&h=400&fit=crop",
+    color: "from-red-500/70 to-orange-500/70",
+    icon: Pizza,
+  },
+  {
+    id: 2,
+    title: "Burgers & Fries",
+    subtitle: "Crispy & Juicy",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&h=400&fit=crop",
+    color: "from-amber-500/70 to-orange-600/70",
+    icon: Sandwich,
+  },
+  {
+    id: 3,
+    title: "Coffee & Cakes",
+    subtitle: "Freshly Brewed",
+    image: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&h=400&fit=crop",
+    color: "from-brown-500/70 to-amber-600/70",
+    icon: CoffeeIcon,
+  },
+  {
+    id: 4,
+    title: "Desserts",
+    subtitle: "Sweet Treats",
+    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&h=400&fit=crop",
+    color: "from-pink-500/70 to-purple-500/70",
+    icon: Cake,
+  },
+  {
+    id: 5,
+    title: "Ice Cream",
+    subtitle: "Cool & Refreshing",
+    image: "https://images.unsplash.com/photo-1576502200916-3808e07386a5?w=800&h=400&fit=crop",
+    color: "from-blue-500/70 to-cyan-500/70",
+    icon: IceCream,
+  },
+];
+
 // ============== Sub-Components ==============
+
+// Hero Carousel Component
+const HeroCarousel = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const slideInterval = useRef<NodeJS.Timeout | null>(null);
+
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+  }, []);
+
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+  }, []);
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
+
+  // Auto-slide
+  useEffect(() => {
+    if (!isPaused) {
+      slideInterval.current = setInterval(nextSlide, 4000);
+    }
+    return () => {
+      if (slideInterval.current) clearInterval(slideInterval.current);
+    };
+  }, [isPaused, nextSlide]);
+
+  return (
+    <div 
+      className="relative overflow-hidden rounded-3xl mb-6 shadow-xl"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* Slides */}
+      <div 
+        className="flex transition-transform duration-700 ease-out"
+        style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+      >
+        {HERO_SLIDES.map((slide) => {
+          const Icon = slide.icon;
+          return (
+            <div
+              key={slide.id}
+              className="min-w-full relative h-[200px] md:h-[280px] lg:h-[320px] flex-shrink-0"
+            >
+              <Image
+                src={slide.image}
+                alt={slide.title}
+                fill
+                className="object-cover"
+                priority={slide.id === 1}
+              />
+              <div className={`absolute inset-0 bg-gradient-to-r ${slide.color}`} />
+              <div className="absolute inset-0 flex items-center justify-between px-6 md:px-12">
+                <div className="text-white">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Icon className="w-8 h-8 md:w-10 md:h-10 drop-shadow-lg" />
+                    <span className="text-xs md:text-sm font-semibold bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                      Order Now
+                    </span>
+                  </div>
+                  <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold drop-shadow-lg">
+                    {slide.title}
+                  </h2>
+                  <p className="text-sm md:text-lg text-white/90 mt-1 drop-shadow-md">
+                    {slide.subtitle}
+                  </p>
+                  <button className="mt-3 md:mt-4 px-6 py-2 bg-white/20 backdrop-blur-sm text-white font-semibold rounded-xl hover:bg-white/30 transition-all duration-300 text-sm md:text-base border border-white/30 hover:scale-105">
+                    Explore Now →
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Navigation Arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 p-1.5 md:p-2 bg-black/30 backdrop-blur-sm rounded-full text-white hover:bg-black/50 transition-all duration-300 hover:scale-110"
+        aria-label="Previous slide"
+      >
+        <ChevronLeft className="w-4 h-4 md:w-6 md:h-6" />
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 p-1.5 md:p-2 bg-black/30 backdrop-blur-sm rounded-full text-white hover:bg-black/50 transition-all duration-300 hover:scale-110"
+        aria-label="Next slide"
+      >
+        <ChevronRightIcon className="w-4 h-4 md:w-6 md:h-6" />
+      </button>
+
+      {/* Dot Indicators */}
+      <div className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 md:gap-2">
+        {HERO_SLIDES.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`transition-all duration-300 rounded-full ${
+              currentSlide === index
+                ? "w-6 md:w-8 h-1.5 md:h-2 bg-white"
+                : "w-1.5 md:w-2 h-1.5 md:h-2 bg-white/50 hover:bg-white/80"
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* Slide Counter */}
+      <div className="absolute bottom-3 md:bottom-4 right-4 md:right-6 text-white/80 text-xs md:text-sm bg-black/20 backdrop-blur-sm px-2 py-1 rounded-lg">
+        {currentSlide + 1} / {HERO_SLIDES.length}
+      </div>
+    </div>
+  );
+};
+
+// Image Carousel for Restaurant Card
+const RestaurantImageCarousel = ({ 
+  images, 
+  name, 
+  isHovered,
+  isClosed,
+}: { 
+  images?: string[]; 
+  name: string; 
+  isHovered: boolean;
+  isClosed?: boolean;
+}) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [imageError, setImageError] = useState(false);
+  const slideInterval = useRef<NodeJS.Timeout | null>(null);
+  
+  // If no images or error, show initials
+  if (!images || images.length === 0 || imageError) {
+    const initials = name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+    return (
+      <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-orange-500 bg-gradient-to-br from-orange-50 to-orange-100">
+        {initials}
+      </div>
+    );
+  }
+
+  // Auto-slide only when hovered
+  useEffect(() => {
+    if (isHovered && images.length > 1) {
+      slideInterval.current = setInterval(() => {
+        setCurrentImageIndex((prev) => (prev + 1) % images.length);
+      }, 2000);
+    } else {
+      if (slideInterval.current) {
+        clearInterval(slideInterval.current);
+        slideInterval.current = null;
+      }
+    }
+    return () => {
+      if (slideInterval.current) {
+        clearInterval(slideInterval.current);
+        slideInterval.current = null;
+      }
+    };
+  }, [isHovered, images.length]);
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
+  return (
+    <div className="relative w-full h-full">
+      <Image
+        src={images[currentImageIndex] || images[0]}
+        alt={name}
+        fill
+        className="object-cover transition-transform duration-700"
+        onError={handleImageError}
+      />
+      
+      {/* Blur Overlay for Closed Restaurants (like Swiggy) */}
+      {isClosed && (
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 text-center border border-white/20">
+            <Clock className="w-10 h-10 text-white mx-auto mb-2" />
+            <p className="text-white font-bold text-lg">Closed</p>
+            <p className="text-white/70 text-xs">Currently unavailable</p>
+          </div>
+        </div>
+      )}
+      
+      {/* Image Counter for multiple images */}
+      {images.length > 1 && !isClosed && (
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+          {images.map((_, index) => (
+            <span
+              key={index}
+              className={`transition-all duration-300 rounded-full ${
+                currentImageIndex === index
+                  ? "w-4 h-1 bg-white"
+                  : "w-1 h-1 bg-white/50"
+              }`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Image Count Badge */}
+      {images.length > 1 && !isClosed && (
+        <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white text-xs px-2 py-0.5 rounded-full">
+          {currentImageIndex + 1}/{images.length}
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Premium Skeleton Loading
 const RestaurantCardSkeleton = ({ variant = "grid" }: { variant?: "grid" | "list" }) => (
@@ -180,7 +420,6 @@ const RestaurantCard = ({
   variant?: "grid" | "list";
   onFavoriteToggle?: (id: string) => void;
 }) => {
-  const [imageError, setImageError] = useState(false);
   const [isFavorite, setIsFavorite] = useState(restaurant.isFavorite || false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -199,15 +438,6 @@ const RestaurantCard = ({
     return `${formatTime(slot.open)} - ${formatTime(slot.close)}`;
   };
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((word) => word[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -217,16 +447,63 @@ const RestaurantCard = ({
 
   // Determine if restaurant has special status
   const hasSpecialStatus = restaurant.isFeatured || restaurant.isTrending || restaurant.isNew;
+  const isClosed = !restaurant.isOpen;
+
+  // Generate random images for each restaurant if not provided
+  const getRestaurantImages = (name: string): string[] => {
+    if (restaurant.images && restaurant.images.length > 0) {
+      return restaurant.images;
+    }
+    
+    // Generate deterministic random images based on restaurant name
+    const seed = name.length;
+    const imageSets: Record<string, string[]> = {
+      pizza: [
+        "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=600&h=400&fit=crop",
+      ],
+      burger: [
+        "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f9?w=600&h=400&fit=crop",
+      ],
+      cafe: [
+        "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=400&fit=crop",
+      ],
+      indian: [
+        "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1565557623262-b5c2c3f66533?w=600&h=400&fit=crop",
+      ],
+      dessert: [
+        "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?w=600&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600&h=400&fit=crop",
+      ],
+    };
+
+    const keys = Object.keys(imageSets);
+    const index = seed % keys.length;
+    const key = keys[index];
+    return imageSets[key];
+  };
+
+  const images = getRestaurantImages(restaurant.restaurantName);
 
   return (
     <Link
       href={`/restaurant/${restaurant._id}`}
-      className="group block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-400 hover:-translate-y-2 overflow-hidden relative"
+      className={`group block bg-white rounded-2xl border shadow-sm hover:shadow-2xl transition-all duration-400 hover:-translate-y-2 overflow-hidden relative ${
+        isClosed ? "border-gray-200 opacity-75" : "border-gray-100"
+      }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Special Status Banner */}
-      {hasSpecialStatus && (
+      {hasSpecialStatus && !isClosed && (
         <div className="absolute top-3 left-3 z-10 flex gap-1.5">
           {restaurant.isFeatured && (
             <Badge variant="primary" icon={Sparkles}>
@@ -256,25 +533,16 @@ const RestaurantCard = ({
         }`} />
       </button>
 
-      {/* Image Section */}
+      {/* Image Section with Carousel */}
       <div className={`relative overflow-hidden ${
         variant === "grid" ? "h-56" : "h-40"
       } bg-gradient-to-br from-gray-100 to-gray-200`}>
-        {restaurant.image && !imageError ? (
-          <Image
-            src={restaurant.image}
-            alt={restaurant.restaurantName}
-            fill
-            className={`object-cover transition-transform duration-700 ${
-              isHovered ? "scale-110" : "scale-100"
-            }`}
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-orange-500 bg-gradient-to-br from-orange-50 to-orange-100">
-            {getInitials(restaurant.restaurantName)}
-          </div>
-        )}
+        <RestaurantImageCarousel
+          images={images}
+          name={restaurant.restaurantName}
+          isHovered={isHovered}
+          isClosed={isClosed}
+        />
 
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
@@ -284,13 +552,13 @@ const RestaurantCard = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <StatusBadge isOpen={restaurant.isOpen} />
-              {restaurant.discount && (
+              {restaurant.discount && !isClosed && (
                 <Badge variant="warning" icon={Zap}>
                   {restaurant.discount}
                 </Badge>
               )}
             </div>
-            {restaurant.distance && (
+            {restaurant.distance && !isClosed && (
               <Badge variant="info" icon={MapPin}>
                 {restaurant.distance}
               </Badge>
@@ -300,7 +568,7 @@ const RestaurantCard = ({
       </div>
 
       {/* Content Section */}
-      <div className="p-4">
+      <div className={`p-4 ${isClosed ? "opacity-70" : ""}`}>
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <h3 className="font-bold text-gray-900 group-hover:text-orange-500 transition-colors duration-200 text-lg truncate">
@@ -311,7 +579,7 @@ const RestaurantCard = ({
               <span className="truncate">{restaurant.location}</span>
             </div>
           </div>
-          <RatingDisplay rating={restaurant.rating} totalRatings={restaurant.totalRatings} />
+          {!isClosed && <RatingDisplay rating={restaurant.rating} totalRatings={restaurant.totalRatings} />}
         </div>
 
         {/* Tags */}
@@ -322,15 +590,20 @@ const RestaurantCard = ({
           <Badge variant="info" icon={Clock}>
             {getOpeningHours()}
           </Badge>
-          {restaurant.averageCost && (
+          {restaurant.averageCost && !isClosed && (
             <Badge variant="primary" icon={ShoppingBag}>
               ₹{restaurant.averageCost} avg
+            </Badge>
+          )}
+          {isClosed && (
+            <Badge variant="danger" icon={Clock}>
+              Currently Unavailable
             </Badge>
           )}
         </div>
 
         {/* Cuisine Tags */}
-        {restaurant.cuisine && restaurant.cuisine.length > 0 && (
+        {restaurant.cuisine && restaurant.cuisine.length > 0 && !isClosed && (
           <div className="flex items-center gap-1.5 mt-2.5">
             <div className="flex-1 flex items-center gap-1.5 overflow-hidden">
               {restaurant.cuisine.slice(0, 3).map((cuisine, index) => (
@@ -352,38 +625,34 @@ const RestaurantCard = ({
 
         {/* Delivery Info */}
         <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
-          {restaurant.deliveryTime && (
+          {restaurant.deliveryTime && !isClosed && (
             <div className="flex items-center gap-1.5 text-xs text-gray-500">
               <Timer className="w-3.5 h-3.5 text-orange-500" />
               <span className="font-medium text-gray-700">{restaurant.deliveryTime}</span>
             </div>
           )}
-          {restaurant.minimumOrder && (
+          {restaurant.minimumOrder && !isClosed && (
             <div className="flex items-center gap-1.5 text-xs text-gray-500">
               <ShoppingBag className="w-3.5 h-3.5 text-orange-500" />
               <span className="font-medium text-gray-700">Min ₹{restaurant.minimumOrder}</span>
             </div>
           )}
-          {restaurant.offers && restaurant.offers.length > 0 && (
+          {restaurant.offers && restaurant.offers.length > 0 && !isClosed && (
             <div className="flex items-center gap-1.5 text-xs text-orange-500">
               <Flame className="w-3.5 h-3.5" />
               <span className="font-medium">{restaurant.offers.length} offers</span>
             </div>
           )}
+          {isClosed && (
+            <div className="flex items-center gap-1.5 text-xs text-red-500">
+              <Clock className="w-3.5 h-3.5" />
+              <span className="font-medium">Unavailable</span>
+            </div>
+          )}
         </div>
 
         {/* Hover Action Buttons */}
-        <div className={`mt-3 flex items-center gap-2 overflow-hidden transition-all duration-300 ${
-          isHovered ? "max-h-12 opacity-100" : "max-h-0 opacity-0"
-        }`}>
-          <button className="flex-1 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-semibold rounded-xl hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-300 flex items-center justify-center gap-2">
-            View Menu
-            <ChevronRightIcon className="w-4 h-4" />
-          </button>
-          <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
-            <Share2 className="w-4 h-4 text-gray-600" />
-          </button>
-        </div>
+       
       </div>
     </Link>
   );
@@ -471,18 +740,73 @@ export default function RestaurantListPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [activeFilterCount, setActiveFilterCount] = useState(0);
+  const [socketConnected, setSocketConnected] = useState(false);
 
-  // Mock fetch function - using only the 4 actual restaurants
+  // ====== SOCKET CONNECTION (shared socket, same as FoodList) ======
+  useEffect(() => {
+    socket.connect();
+
+    const handleConnect = () => {
+      setSocketConnected(true);
+    };
+
+    const handleDisconnect = () => {
+      setSocketConnected(false);
+    };
+
+    // Live restaurant open/close status — same event FoodList listens for,
+    // so an owner toggling their shop reflects here on the "/" list page too.
+    const handleRestaurantStatus = (data: any) => {
+      setRestaurants((prevRestaurants) =>
+        prevRestaurants.map((restaurant) =>
+          restaurant._id === data._id
+            ? { ...restaurant, isOpen: data.isOpen }
+            : restaurant
+        )
+      );
+
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
+
+      Toast.fire({
+        icon: data.isOpen ? "success" : "error",
+        title: data.isOpen
+          ? `${data.restaurantName} just opened`
+          : `${data.restaurantName} is now closed`,
+      });
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("restaurant:status", handleRestaurantStatus);
+    socket.on("disconnect", handleDisconnect);
+
+    return () => {
+      socket.off("connect", handleConnect);
+      socket.off("restaurant:status", handleRestaurantStatus);
+      socket.off("disconnect", handleDisconnect);
+      socket.disconnect();
+    };
+  }, []);
+
+  // Mock fetch function - using ORIGINAL restaurant names from your API
   const fetchRestaurants = async (refresh = false) => {
     try {
       if (refresh) setIsRefreshing(true);
       else setLoading(true);
       setError(null);
 
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 800));
 
-      // Actual restaurant data - only 4 restaurants
+      // ORIGINAL restaurant data with your actual names
       const mockData: Restaurant[] = [
         {
           _id: "6a75584daf7104512c0742dc",
@@ -507,6 +831,11 @@ export default function RestaurantListPage() {
           discount: "20% OFF",
           offers: ["Free Delivery", "20% OFF"],
           averageCost: 250,
+          images: [
+            "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=600&h=400&fit=crop",
+          ],
         },
         {
           _id: "6a7897d74132fb2304f88828",
@@ -529,6 +858,11 @@ export default function RestaurantListPage() {
           distance: "3.8 km",
           offers: ["10% OFF"],
           averageCost: 180,
+          images: [
+            "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f9?w=600&h=400&fit=crop",
+          ],
         },
         {
           _id: "6a7be0da380d2f30284f72c1",
@@ -552,6 +886,11 @@ export default function RestaurantListPage() {
           discount: "15% OFF",
           offers: ["15% OFF", "Free Pastry"],
           averageCost: 350,
+          images: [
+            "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=400&fit=crop",
+          ],
         },
         {
           _id: "6a852863a5f980013ac0a406",
@@ -574,6 +913,11 @@ export default function RestaurantListPage() {
           distance: "4.5 km",
           offers: ["Free Delivery"],
           averageCost: 120,
+          images: [
+            "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600&h=400&fit=crop",
+          ],
         },
       ];
 
@@ -705,6 +1049,9 @@ export default function RestaurantListPage() {
             </div>
           </div>
 
+          {/* Hero Carousel Skeleton */}
+          <div className="h-[200px] md:h-[280px] lg:h-[320px] bg-gray-200 rounded-3xl mb-6 animate-pulse" />
+
           {/* Filters Skeleton */}
           <div className="bg-white rounded-2xl border border-gray-100 p-4 mb-6 animate-pulse">
             <div className="flex flex-wrap gap-2">
@@ -750,6 +1097,21 @@ export default function RestaurantListPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
+        {/* Socket Connection Status */}
+        <div className="mb-4 flex items-center justify-end">
+          <div className={`flex items-center gap-2 text-xs ${
+            socketConnected ? "text-green-500" : "text-gray-400"
+          }`}>
+            <span className={`w-2 h-2 rounded-full ${
+              socketConnected ? "bg-green-500 animate-pulse" : "bg-gray-300"
+            }`} />
+            {socketConnected ? "Live Updates" : "Connecting..."}
+          </div>
+        </div>
+
+        {/* ====== HERO CAROUSEL ====== */}
+        <HeroCarousel />
+
         {/* ====== PREMIUM HEADER ====== */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 mb-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-orange-50 to-orange-100 rounded-full opacity-20 -translate-y-1/2 translate-x-1/3" />

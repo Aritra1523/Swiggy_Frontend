@@ -1,4 +1,3 @@
-
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -14,7 +13,9 @@ export default function HeroSection() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+      // Redirect to the food list page. FoodList reads this "search" param
+      // itself and filters the foods already in Redux — no search API needed.
+      router.push(`/foods?search=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
@@ -126,7 +127,7 @@ export default function HeroSection() {
             {popularSearches.map((item) => (
               <motion.button
                 key={item}
-                onClick={() => setSearchQuery(item)}
+                onClick={() => router.push(`/foods?search=${encodeURIComponent(item)}`)}
                 className="text-sm bg-white/80 backdrop-blur-sm hover:bg-orange-100 px-3 py-1.5 rounded-full transition-all duration-300 text-gray-600 hover:text-orange-600 shadow-sm"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

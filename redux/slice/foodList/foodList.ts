@@ -18,52 +18,45 @@ const initialState: FoodState = {
 
 export const fetchFoodList = createAsyncThunk<
   FoodListResponse,
-  void,
+  string | undefined,
   { rejectValue: string }
->("food/fetchFoodList", async (_, { rejectWithValue }) => {
+>("food/fetchFoodList", async (restaurantId, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.get<FoodListResponse>(
-      endpoints.foodList,
-    );
+    const url = restaurantId
+      ? endpoints.restaurantFood(restaurantId)
+      : endpoints.foodList;
+
+    const response = await axiosInstance.get<FoodListResponse>(url);
 
     return response.data;
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data?.message || "Failed to fetch food list",
+      error.response?.data?.message || "Failed to fetch food list"
     );
   }
 });
 
 const foodSlice = createSlice({
   name: "food",
-
   initialState,
-
   reducers: {
     clearFoodError: (state) => {
       state.error = null;
     },
   },
-
   extraReducers: (builder) => {
     builder
-
-      // FETCH FOOD LIST
       .addCase(fetchFoodList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-
-      .addCase(fetchFoodList.fulfilled, (state, {payload}) => {
+      .addCase(fetchFoodList.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.error = null;
-
-        state.foods = payload.data;
+  state.foods = payload.data ?? payload.foods ?? [];
       })
-
-      .addCase(fetchFoodList.rejected, (state, {payload}) => {
+      .addCase(fetchFoodList.rejected, (state, { payload }) => {
         state.loading = false;
-
         state.error = payload || "Failed to fetch food list";
       });
   },

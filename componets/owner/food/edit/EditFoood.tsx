@@ -6,8 +6,12 @@ import {
   useFoodDetails,
   useEditFood,
 } from "@/customHooks/owner/useFoodManagement";
-import { EditFoodPayload, OwnerFoodDetails } from "@/typescript/restaurantOwner/restaurantOwner";
+import {
+  EditFoodPayload,
+  OwnerFoodDetails,
+} from "@/typescript/restaurantOwner/restaurantOwner";
 import { ArrowLeft, ImagePlus } from "lucide-react";
+import Swal from "sweetalert2";
 
 const FOOD_TYPES: OwnerFoodDetails["foodType"][] = [
   "Starter",
@@ -65,14 +69,26 @@ export default function EditFoodPage() {
     setImagePreview(URL.createObjectURL(file));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    editFood.mutate(
-      { id, payload: form },
-      { onSuccess: () => router.push("/owner/foods/foodList") },
-    );
-  };
-
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  editFood.mutate(
+    { id, payload: form },
+    {
+      onSuccess: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: 'Food item has been updated successfully.',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        }).then(() => {
+          router.push("/owner/foods/foodList");
+        });
+      },
+    }
+  );
+};
   if (isLoading || !initialized) {
     return (
       <main className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -86,7 +102,8 @@ export default function EditFoodPage() {
       <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="text-center max-w-md">
           <p className="text-red-500 font-medium">
-            {(error as any)?.response?.data?.message || "Couldn't load this item"}
+            {(error as any)?.response?.data?.message ||
+              "Couldn't load this item"}
           </p>
           <button
             onClick={() => router.push("/owner/foods/foodList")}
@@ -118,8 +135,8 @@ export default function EditFoodPage() {
           {food.approvalStatus === "approved" && (
             <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
               This item is already approved. Saving changes will not require
-              re-approval unless your backend is configured to reset
-              approval status on edit — worth confirming.
+              re-approval unless your backend is configured to reset approval
+              status on edit — worth confirming.
             </div>
           )}
 
@@ -167,7 +184,7 @@ export default function EditFoodPage() {
                 required
                 value={form.itemName ?? ""}
                 onChange={(e) => update("itemName", e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
 
@@ -180,7 +197,7 @@ export default function EditFoodPage() {
                 value={form.description ?? ""}
                 onChange={(e) => update("description", e.target.value)}
                 rows={3}
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
 
@@ -193,9 +210,12 @@ export default function EditFoodPage() {
                 <select
                   value={form.foodType}
                   onChange={(e) =>
-                    update("foodType", e.target.value as OwnerFoodDetails["foodType"])
+                    update(
+                      "foodType",
+                      e.target.value as OwnerFoodDetails["foodType"],
+                    )
                   }
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
                   {FOOD_TYPES.map((t) => (
                     <option key={t} value={t}>
@@ -247,7 +267,7 @@ export default function EditFoodPage() {
                   required
                   value={form.category ?? ""}
                   onChange={(e) => update("category", e.target.value)}
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
               <div>
@@ -258,7 +278,7 @@ export default function EditFoodPage() {
                   type="text"
                   value={form.cuisine ?? ""}
                   onChange={(e) => update("cuisine", e.target.value)}
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
             </div>
@@ -275,7 +295,7 @@ export default function EditFoodPage() {
                   min={0}
                   value={form.basePrice ?? 0}
                   onChange={(e) => update("basePrice", Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
               <div>
@@ -286,8 +306,10 @@ export default function EditFoodPage() {
                   type="number"
                   min={0}
                   value={form.discountPrice ?? 0}
-                  onChange={(e) => update("discountPrice", Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  onChange={(e) =>
+                    update("discountPrice", Number(e.target.value))
+                  }
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
                 <p className="text-xs text-gray-400 mt-1">
                   Leave 0 for no discount
@@ -306,7 +328,7 @@ export default function EditFoodPage() {
                   min={0}
                   value={form.gst ?? 0}
                   onChange={(e) => update("gst", Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
               <div>
@@ -317,8 +339,10 @@ export default function EditFoodPage() {
                   type="number"
                   min={0}
                   value={form.preparationTime ?? 0}
-                  onChange={(e) => update("preparationTime", Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  onChange={(e) =>
+                    update("preparationTime", Number(e.target.value))
+                  }
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
             </div>

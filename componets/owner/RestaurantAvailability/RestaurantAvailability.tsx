@@ -1,8 +1,9 @@
 "use client";
 
 import { useMyRestaurant, useRestaurantStatus } from "@/customHooks/owner/useFoodManagement";
-import { Power, PowerOff, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Power, PowerOff, Loader2, AlertCircle, CheckCircle2, XCircle } from "lucide-react";
 import { useState, useEffect } from "react";
+import Swal from 'sweetalert2';
 
 export default function RestaurantAvailability() {
   const { data: restaurantRes, isLoading: restaurantLoading, refetch } = useMyRestaurant();
@@ -30,10 +31,40 @@ export default function RestaurantAvailability() {
       onSuccess: () => {
         // Refetch to ensure data is synced
         refetch();
+        
+        // Show SweetAlert on successful status change
+        Swal.fire({
+          icon: 'success',
+          title: newStatus ? 'Restaurant Opened! 🟢' : 'Restaurant Closed! 🔴',
+          text: newStatus 
+            ? 'Your restaurant is now open and accepting orders.' 
+            : 'Your restaurant is now closed. Customers cannot place orders.',
+          timer: 2500,
+          timerProgressBar: true,
+          showConfirmButton: true,
+          confirmButtonColor: newStatus ? '#22c55e' : '#ef4444',
+          confirmButtonText: 'Got it!',
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl',
+            confirmButton: 'px-6 py-2.5 text-sm font-semibold rounded-xl',
+          },
+        });
       },
-      onError: () => {
+      onError: (error: any) => {
         // Revert local state on error
         setLocalIsOpen(!newStatus);
+        
+        Swal.fire({
+          icon: 'error',
+          title: 'Update Failed',
+          text: error?.response?.data?.message || 'Failed to update restaurant status. Please try again.',
+          confirmButtonColor: '#ef4444',
+          confirmButtonText: 'Try Again',
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl',
+            confirmButton: 'px-6 py-2.5 text-sm font-semibold rounded-xl',
+          },
+        });
       }
     });
   };
@@ -63,13 +94,13 @@ export default function RestaurantAvailability() {
             </h2>
             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
               isOpen 
-                ? 'bg-green-100 text-green-700' 
-                : 'bg-red-100 text-red-700'
+                ? 'bg-green-100 text-green-700 border border-green-200' 
+                : 'bg-red-100 text-red-700 border border-red-200'
             }`}>
               {isOpen ? (
                 <CheckCircle2 className="w-3 h-3" />
               ) : (
-                <AlertCircle className="w-3 h-3" />
+                <XCircle className="w-3 h-3" />
               )}
               {isOpen ? 'Open' : 'Closed'}
             </span>
@@ -120,8 +151,8 @@ export default function RestaurantAvailability() {
       {/* Status Indicator */}
       <div className="mt-4 pt-4 border-t border-gray-100">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className={`relative`}>
+          <div className="flex items-center gap-3">
+            <div className="relative">
               <span
                 className={`absolute inset-0 rounded-full animate-ping ${
                   isOpen ? 'bg-green-400' : 'bg-red-400'
@@ -142,8 +173,8 @@ export default function RestaurantAvailability() {
               {isPending
                 ? "Updating..."
                 : isOpen
-                  ? "Restaurant is Open"
-                  : "Restaurant is Closed"}
+                  ? "✅ Restaurant is Open"
+                  : "❌ Restaurant is Closed"}
             </span>
           </div>
 
@@ -168,7 +199,7 @@ export default function RestaurantAvailability() {
       {/* Quick Stats */}
       <div className="mt-3 grid grid-cols-2 gap-2">
         <div className={`rounded-xl px-3 py-2 ${
-          isOpen ? 'bg-green-50' : 'bg-red-50'
+          isOpen ? 'bg-green-50 border border-green-100' : 'bg-red-50 border border-red-100'
         }`}>
           <p className="text-xs text-gray-500">Current Status</p>
           <p className={`text-sm font-semibold ${
@@ -177,7 +208,7 @@ export default function RestaurantAvailability() {
             {isOpen ? '🟢 Online' : '🔴 Offline'}
           </p>
         </div>
-        <div className="bg-gray-50 rounded-xl px-3 py-2">
+        <div className="bg-gray-50 rounded-xl px-3 py-2 border border-gray-100">
           <p className="text-xs text-gray-500">Last Updated</p>
           <p className="text-sm font-semibold text-gray-700">
             {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

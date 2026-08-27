@@ -391,7 +391,7 @@ export default function FoodDetailsPage() {
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
               <button
-                onClick={() => router.push(`/owner/foods/${food._id}/edit`)}
+                onClick={() => router.push(`/owner/foods/edit/${food._id}`)}
                 className="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transition-all active:scale-95"
               >
                 <Pencil className="w-4 h-4" />

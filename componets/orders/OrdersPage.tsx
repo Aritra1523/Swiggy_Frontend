@@ -7,6 +7,9 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import useOrders from "@/customHooks/order/useOrders";
 import { socket } from "@/lib/socket/socket";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
+import Swal from "sweetalert2";
 
 import {
   Clock,
@@ -38,15 +41,66 @@ export default function OrdersPage() {
   const router = useRouter();
 
   const { orders, orderLoading, orderError, handleFetchMyOrders } = useOrders();
+  const userId = useSelector((state: RootState) => state.auth.user?.id);
 
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // ---- Socket io:  ----
-
+  // ---- Fetch orders on mount ----
   useEffect(() => {
     handleFetchMyOrders();
   }, []);
+
+  // ---- Socket: live order status updates ----
+  useEffect(() => {
+    socket.connect();
+
+    const handleConnect = () => {
+      console.log("Connected:", socket.id);
+
+      if (userId) {
+        socket.emit("user:join", userId);
+        console.log("Joined room for user:", userId);
+      }
+    };
+
+    const handleOrderStatus = (data: any) => {
+      console.log("Order status update:", data);
+
+      // Only react if this is the user's own order
+      if (data.userId !== userId) {
+        console.log("Order not for this user, ignoring...");
+        return;
+      }
+
+      // Refresh the orders list
+      handleFetchMyOrders();
+
+      // Show toast notification to the customer
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "info",
+        title: `Order status: ${data.previousStatus} → ${data.currentStatus}`,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+    };
+
+    if (socket.connected && userId) {
+      socket.emit("user:join", userId);
+    }
+
+    socket.on("connect", handleConnect);
+    socket.on("order:status", handleOrderStatus);
+
+    return () => {
+      socket.off("connect", handleConnect);
+      socket.off("order:status", handleOrderStatus);
+      socket.disconnect();
+    };
+  }, [userId, handleFetchMyOrders]);
 
   const statusConfig = {
     placed: {
@@ -68,7 +122,6 @@ export default function OrdersPage() {
       progress: 60,
     },
     out_for_delivery: {
-      // ✅ Added out_for_delivery
       icon: Bike,
       color: "bg-indigo-50 text-indigo-700 border-indigo-100",
       label: "Out for Delivery",
@@ -457,7 +510,7 @@ export default function OrdersPage() {
                                     ? "40%"
                                     : order.status === "preparing"
                                       ? "60%"
-                                      : order.status === "out_for_delivery" // ✅ Added out_for_delivery
+                                      : order.status === "out_for_delivery"
                                         ? "85%"
                                         : "0%",
                             }}
@@ -468,8 +521,7 @@ export default function OrdersPage() {
                           <span>Placed</span>
                           <span>Accepted</span>
                           <span>Preparing</span>
-                          <span>Out for Delivery</span>{" "}
-                          {/* ✅ Added this step */}
+                          <span>Out for Delivery</span>
                           <span>Delivered</span>
                         </div>
                       </div>
