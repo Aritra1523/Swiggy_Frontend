@@ -17,3 +17,5 @@ export interface PartnerContractResponse {
   status: boolean;
   message: string;
 }
+
+

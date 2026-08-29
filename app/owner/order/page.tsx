@@ -1,4 +1,4 @@
-import OwnerOrdersPage from '@/componets/owner/OwnerOrders/OwnerOrdersPage'
+import OwnerOrdersPage from '@/componets/owner/OwnerOrders/OrderPage/OwnerOrdersPage'
 import React from 'react'
 
 const page = () => {

@@ -54,11 +54,8 @@ const useVerifyOtp = (openLogin: () => void, close: () => void) => {
 
   return {
     register,
-
     handleSubmit: handleSubmit(onSubmit),
-
     errors,
-
     isSubmitting,
   };
 };

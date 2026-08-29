@@ -84,3 +84,8 @@ export interface OpeningSlot {
   close: string;
   _id: string;
 }
+export interface RestaurantState {
+  restaurants: Restaurant[];
+  loading: boolean;
+  error: string | null;
+}

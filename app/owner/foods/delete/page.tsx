@@ -1,3 +1,5 @@
+"use client";
+
 import DeleteFoodModal from "@/componets/owner/food/delete/DeleteFood";
 import React, { useState } from "react";
 

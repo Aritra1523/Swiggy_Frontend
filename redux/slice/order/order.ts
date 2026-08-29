@@ -15,47 +15,22 @@ import {
   PlaceOrderPayload,
   PlaceOrderResponse,
   UpdateOrderStatusPayload,
+  OrderState,
 } from "@/typescript/order/order";
 import { data } from "framer-motion/client";
 import { isRejectedWithValue } from "@reduxjs/toolkit";
 
-interface OrderState {
-  cart: Cart | null;
 
-  orders: Order[];
-
-  selectedOrder: Order | null;
-
-  loading: boolean;
-
-  cartLoading: boolean;
-
-  orderLoading: boolean;
-
-  error: string | null;
-
-  cartError: string | null;
-
-  orderError: string | null;
-}
 
 const initialState: OrderState = {
   cart: null,
-
   orders: [],
-
   selectedOrder: null,
-
   loading: false,
-
   cartLoading: false,
-
   orderLoading: false,
-
   error: null,
-
   cartError: null,
-
   orderError: null,
 };
 
@@ -194,8 +169,6 @@ export const cancelOrder = createAsyncThunk<
   }
 });
 
-
-
 const orderSlice = createSlice({
   name: "order",
 
@@ -226,7 +199,7 @@ const orderSlice = createSlice({
         state.cartError = null;
       })
 
-      .addCase(addToCart.fulfilled, (state, {payload}) => {
+      .addCase(addToCart.fulfilled, (state, { payload }) => {
         state.cartLoading = false;
 
         if (payload.data) {
@@ -234,7 +207,7 @@ const orderSlice = createSlice({
         }
       })
 
-      .addCase(addToCart.rejected, (state, {payload}) => {
+      .addCase(addToCart.rejected, (state, { payload }) => {
         state.cartLoading = false;
 
         state.cartError = payload || "Failed to add item";
@@ -247,13 +220,13 @@ const orderSlice = createSlice({
         state.cartError = null;
       })
 
-      .addCase(fetchCart.fulfilled, (state, {payload}) => {
+      .addCase(fetchCart.fulfilled, (state, { payload }) => {
         state.cartLoading = false;
 
         state.cart = payload.data;
       })
 
-      .addCase(fetchCart.rejected, (state, {payload}) => {
+      .addCase(fetchCart.rejected, (state, { payload }) => {
         state.cartLoading = false;
 
         state.cartError = payload || "Failed to fetch cart";
@@ -266,7 +239,7 @@ const orderSlice = createSlice({
         state.cartError = null;
       })
 
-      .addCase(deleteCartItem.fulfilled, (state, {payload}) => {
+      .addCase(deleteCartItem.fulfilled, (state, { payload }) => {
         state.cartLoading = false;
 
         if (payload.data) {
@@ -276,7 +249,7 @@ const orderSlice = createSlice({
         }
       })
 
-      .addCase(deleteCartItem.rejected, (state, {payload}) => {
+      .addCase(deleteCartItem.rejected, (state, { payload }) => {
         state.cartLoading = false;
 
         state.cartError = payload || "Failed to update cart";
@@ -289,7 +262,7 @@ const orderSlice = createSlice({
         state.orderError = null;
       })
 
-      .addCase(placeOrder.fulfilled, (state, {payload}) => {
+      .addCase(placeOrder.fulfilled, (state, { payload }) => {
         state.orderLoading = false;
 
         if (payload.data) {
@@ -300,7 +273,7 @@ const orderSlice = createSlice({
         state.cart = null;
       })
 
-      .addCase(placeOrder.rejected, (state, {payload}) => {
+      .addCase(placeOrder.rejected, (state, { payload }) => {
         state.orderLoading = false;
 
         state.orderError = payload || "Failed to place order";
@@ -313,13 +286,13 @@ const orderSlice = createSlice({
         state.orderError = null;
       })
 
-      .addCase(fetchMyOrders.fulfilled, (state, {payload}) => {
+      .addCase(fetchMyOrders.fulfilled, (state, { payload }) => {
         state.orderLoading = false;
 
         state.orders = payload.data;
       })
 
-      .addCase(fetchMyOrders.rejected, (state, {payload}) => {
+      .addCase(fetchMyOrders.rejected, (state, { payload }) => {
         state.orderLoading = false;
 
         state.orderError = payload || "Failed to fetch orders";
@@ -332,19 +305,17 @@ const orderSlice = createSlice({
         state.error = null;
       })
 
-      .addCase(fetchOrderDetails.fulfilled, (state, {payload}) => {
+      .addCase(fetchOrderDetails.fulfilled, (state, { payload }) => {
         state.loading = false;
 
         state.selectedOrder = payload.data;
       })
 
-      .addCase(fetchOrderDetails.rejected, (state, {payload}) => {
+      .addCase(fetchOrderDetails.rejected, (state, { payload }) => {
         state.loading = false;
 
         state.error = payload || "Failed to fetch order";
       })
-
-      // CANCEL ORDER
 
       // CANCEL ORDER
 
@@ -393,40 +364,11 @@ const orderSlice = createSlice({
         }
       })
 
-      .addCase(cancelOrder.rejected, (state, {payload}) => {
+      .addCase(cancelOrder.rejected, (state, { payload }) => {
         state.orderLoading = false;
 
         state.orderError = payload || "Failed to cancel order";
       });
-
-    // UPDATE ORDER STATUS
-
-    // .addCase(updateOrderStatus.pending, (state) => {
-    //   state.orderLoading = true;
-    //   state.orderError = null;
-    // })
-
-    // .addCase(updateOrderStatus.fulfilled, (state, action) => {
-    //   state.orderLoading = false;
-
-    //   if (action.payload.data) {
-    //     state.selectedOrder = action.payload.data;
-
-    //     const index = state.orders.findIndex(
-    //       (order) => order._id === action.payload.data?._id,
-    //     );
-
-    //     if (index !== -1) {
-    //       state.orders[index] = action.payload.data;
-    //     }
-    //   }
-    // })
-
-    // .addCase(updateOrderStatus.rejected, (state, action) => {
-    //   state.orderLoading = false;
-
-    //   state.orderError = action.payload || "Failed to update order status";
-    // });
   },
 });
 

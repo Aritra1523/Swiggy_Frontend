@@ -5,12 +5,11 @@ export const registerSchema = yup.object({
     .string()
     .required("First name is required")
     .min(3, "minimum 3 characters"),
-mobile_Number: yup
-  .string()
-  .required("Mobile number is required")
-  .matches(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits"),  
-  
-  
+  mobile_Number: yup
+    .string()
+    .required("Mobile number is required")
+    .matches(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits"),
+
   email: yup.string().email("Invalid email").required("Email is required"),
 
   address: yup.string().required("Address is required"),

@@ -31,7 +31,7 @@ export const fetchFoodList = createAsyncThunk<
     return response.data;
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data?.message || "Failed to fetch food list"
+      error.response?.data?.message || "Failed to fetch food list",
     );
   }
 });
@@ -53,7 +53,7 @@ const foodSlice = createSlice({
       .addCase(fetchFoodList.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.error = null;
-  state.foods = payload.data ?? payload.foods ?? [];
+        state.foods = payload.data ?? payload.foods ?? [];
       })
       .addCase(fetchFoodList.rejected, (state, { payload }) => {
         state.loading = false;

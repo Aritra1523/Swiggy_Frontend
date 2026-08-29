@@ -7,4 +7,7 @@ export interface VerifyOtpPayload {
 export interface VerifyOtpResponse {
   status: boolean;
   message: string;
+  data:'',
+  accessToken:'',
+  refreshToken:""
 }

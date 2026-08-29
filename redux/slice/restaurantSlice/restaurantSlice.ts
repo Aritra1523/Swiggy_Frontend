@@ -2,16 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import axiosInstance from "@/api/baseUrl/Api";
 import { endpoints } from "@/api/endpoints/Endpoints";
-import {
-  Restaurant,
-  RestaurantResponse,
-} from "@/typescript/foodListType/type";
+import { Restaurant, RestaurantResponse,RestaurantState } from "@/typescript/foodListType/type";
 
-interface RestaurantState {
-  restaurants: Restaurant[];
-  loading: boolean;
-  error: string | null;
-}
 
 const initialState: RestaurantState = {
   restaurants: [],
@@ -25,16 +17,14 @@ export const fetchRestaurantList = createAsyncThunk<
   { rejectValue: string }
 >("restaurant/fetchRestaurantList", async (_, { rejectWithValue }) => {
   try {
-    const response =
-      await axiosInstance.get<RestaurantResponse>(
-        endpoints.restaurantList
-      );
+    const response = await axiosInstance.get<RestaurantResponse>(
+      endpoints.restaurantList,
+    );
 
     return response.data;
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data?.message ||
-        "Failed to fetch restaurant list"
+      error.response?.data?.message || "Failed to fetch restaurant list",
     );
   }
 });
@@ -57,31 +47,21 @@ const restaurantSlice = createSlice({
         state.error = null;
       })
 
-      .addCase(
-        fetchRestaurantList.fulfilled,
-        (state, action) => {
-          state.loading = false;
-          state.error = null;
+      .addCase(fetchRestaurantList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
 
-          state.restaurants = action.payload.data;
-        }
-      )
+        state.restaurants = action.payload.data;
+      })
 
-      .addCase(
-        fetchRestaurantList.rejected,
-        (state, action) => {
-          state.loading = false;
+      .addCase(fetchRestaurantList.rejected, (state, action) => {
+        state.loading = false;
 
-          state.error =
-            action.payload ||
-            "Failed to fetch restaurant list";
-        }
-      );
+        state.error = action.payload || "Failed to fetch restaurant list";
+      });
   },
 });
 
-export const {
-  clearRestaurantError,
-} = restaurantSlice.actions;
+export const { clearRestaurantError } = restaurantSlice.actions;
 
 export default restaurantSlice.reducer;

@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { AppDispatch } from "@/redux/store/store";
 import Swal from "sweetalert2";
-import { setCookie } from "cookies-next";
 
 import { loginUser } from "@/redux/slice/auth/authSlice";
 import { LoginPayload } from "@/typescript/auth/Login";
@@ -23,27 +22,15 @@ const useLogin = (onSuccess?: () => void) => {
     formState: { errors, isSubmitting },
   } = useForm<LoginPayload>({
     resolver: yupResolver(loginSchema),
-     mode: "onChange",
+    mode: "onChange",
   });
 
   const onSubmit = async (data: LoginPayload) => {
     try {
+      // Cookie persistence (token / refresh-token / user) now happens
+      // inside loginUser's thunk in authSlice.ts, so every dispatcher
+      // of loginUser gets it automatically — no need to repeat it here.
       const res = await dispatch(loginUser(data)).unwrap();
-
-      setCookie("token", res.accessToken, {
-        maxAge: 60 * 15,
-        path: "/",
-      });
-
-      setCookie("refresh-token", res.refreshToken, {
-        maxAge: 60 * 60 * 24 * 7,
-        path: "/",
-      });
-
-      setCookie("user", JSON.stringify(res.data), {
-        maxAge: 60 * 60 * 24 * 7,
-        path: "/",
-      });
 
       Swal.fire({
         icon: "success",

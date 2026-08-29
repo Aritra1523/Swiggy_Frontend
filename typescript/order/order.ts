@@ -111,19 +111,25 @@ export interface UpdateOrderStatusPayload {
 }
 
 
-// export interface OrderRestaurant {
-//   _id: string;
-//   restaurantName?: string;
-//   location?: string;
-// }
-// export interface Order {
-//   _id: string;
-//   user: string;
-//   restaurant: OrderRestaurant;
-//   items: OrderItem[];
-//   totalAmount: number;
-//   address: string;
-//   status: string;
-//   createdAt: string;
-//   updatedAt: string;
-// }
+///////////////////
+
+
+export interface OrderState {
+  cart: Cart | null;
+
+  orders: Order[];
+
+  selectedOrder: Order | null;
+
+  loading: boolean;
+
+  cartLoading: boolean;
+
+  orderLoading: boolean;
+
+  error: string | null;
+
+  cartError: string | null;
+
+  orderError: string | null;
+}

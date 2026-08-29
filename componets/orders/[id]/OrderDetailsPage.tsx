@@ -651,9 +651,9 @@ export default function OrderDetailsPage() {
                   <User className="w-4 h-4 text-blue-500" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">
+                  {/* <p className="text-sm font-medium text-gray-900">
                     {selectedOrder.user?.name || "Customer"}
-                  </p>
+                  </p> */}
                   {selectedOrder.user?.phone && (
                     <p className="text-sm text-gray-500">
                       {selectedOrder.user.phone}
