@@ -1,4 +1,3 @@
-// components/CartError.tsx
 interface CartErrorProps {
   error: string;
   onRetry: () => void;

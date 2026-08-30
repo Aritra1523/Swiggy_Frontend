@@ -53,10 +53,17 @@ export default function AddFoodPage() {
     formState: { errors },
   } = methods;
 
-  const getStepFields = (step: StepId): (keyof AddFoodPayload)[] => {
-    const stepConfig = STEPS.find((s) => s.id === step);
-    return (stepConfig?.fields as (keyof AddFoodPayload)[]) || [];
-  };
+  // const getStepFields = (step: StepId): (keyof AddFoodPayload)[] => {
+  //   const stepConfig = STEPS.find((s) => s.id === step);
+  //   return (stepConfig?.fields as (keyof AddFoodPayload)[]) || [];
+  // };
+  const getStepFields = (
+  step: StepId
+): readonly (keyof AddFoodPayload)[] => {
+  const stepConfig = STEPS.find((s) => s.id === step);
+
+  return stepConfig?.fields ?? [];
+};
 
   const validateStep = async (step: StepId): Promise<boolean> => {
     const fields = getStepFields(step);
@@ -81,13 +88,17 @@ export default function AddFoodPage() {
             (field) => errors[field],
           );
           if (firstErrorField) {
-            const element = document.querySelector(
-              `[name="${firstErrorField}"]`,
-            );
-            if (element) {
-              element.scrollIntoView({ behavior: "smooth", block: "center" });
-              element.focus();
-            }
+           const element = document.querySelector<HTMLElement>(
+  `[name="${firstErrorField}"]`,
+);
+
+if (element) {
+  element.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  });
+  element.focus();
+}
           }
           return;
         }

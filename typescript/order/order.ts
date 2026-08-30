@@ -13,17 +13,23 @@ export interface CartRestaurant {
   restaurantName: string;
   location: string;
   status: string;
+  logo?: string;
+    phone?: string;
+
 }
 
 export interface CartItem {
+   _id: string;
   food: CartFood;
   restaurant: CartRestaurant;
   quantity: number;
+  price: number;   
 }
 
 export interface Cart {
   _id: string;
   user: string;
+  restaurant: CartRestaurant; 
   items: CartItem[];
   totalAmount?: number;
   createdAt?: string;
@@ -68,10 +74,13 @@ export interface PlaceOrderResponse {
 }
 
 export interface OrderItem {
+    _id: string;
   food: CartFood;
   restaurant: CartRestaurant;
   quantity: number;
   price?: number;
+    variant?: string;
+
 }
 
 export interface Order {
@@ -83,6 +92,7 @@ export interface Order {
   status: string;
   createdAt: string;
   updatedAt: string;
+  restaurant: CartRestaurant;
 }
 
 export interface OrdersResponse {

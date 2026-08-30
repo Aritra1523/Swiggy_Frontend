@@ -41,7 +41,7 @@ export interface AddFoodPayload {
   isAvailable: boolean;
   isRecommended: boolean;
   isVeg: boolean;
-  image: File;
+  image?: File;
 }
 
 // All fields optional — editmenu only overwrites what's sent

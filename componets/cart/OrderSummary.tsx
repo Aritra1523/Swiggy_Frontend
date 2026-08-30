@@ -1,4 +1,3 @@
-// components/OrderSummary.tsx
 import { CreditCard, Bike, ChevronRight } from "lucide-react";
 import { BillDetails } from "@/typescript/cartTypes/cartTypes";
 import { isFreeDelivery } from "./cartUtils";

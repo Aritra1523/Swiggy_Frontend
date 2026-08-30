@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { Clock, MapPin, Package, ShoppingBag, ChevronRight } from "lucide-react";
 import OrderStatusBadge from "./OrderStatusBadge";
-
-export default function OrderCard({ order }) {
+import { Order } from "@/typescript/order/order";
+interface OrderCardProps {
+  order: Order;
+}
+export default function OrderCard({ order }: OrderCardProps) {
   const totalItems = order.items?.reduce((total, item) => total + item.quantity, 0) || 0;
 
   return (
@@ -56,8 +59,7 @@ export default function OrderCard({ order }) {
                 </span>
               </div>
               <span className="text-sm font-medium text-orange-500">
-                ₹{(item.price * item.quantity).toFixed(2)}
-              </span>
+₹{((item.price ?? 0) * item.quantity).toFixed(2)}              </span>
             </div>
           ))}
           {order.items?.length > 3 && (

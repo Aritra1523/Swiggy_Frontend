@@ -18,6 +18,7 @@ export interface Restaurant {
 
 export interface CartItem {
   _id: string;
+ 
   food: Food;
   restaurant: Restaurant;
   quantity: number;

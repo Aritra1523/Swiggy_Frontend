@@ -1,4 +1,3 @@
-// utils/cartUtils.ts
 import { CartItem, GroupedRestaurant, BillDetails } from "@/typescript/cartTypes/cartTypes";
 
 export const calculateTotals = (items: CartItem[]): BillDetails => {

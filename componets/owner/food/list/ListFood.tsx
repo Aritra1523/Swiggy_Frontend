@@ -637,24 +637,48 @@ export default function OwnerFoodListPage() {
     }
 
     // Sort
-    result.sort((a, b) => {
-      let compareA = a[sortBy];
-      let compareB = b[sortBy];
+    // result.sort((a, b) => {
+    //   let compareA = a[sortBy];
+    //   let compareB = b[sortBy];
 
-      if (sortBy === "price") {
-        compareA = a.discountPrice || a.basePrice;
-        compareB = b.discountPrice || b.basePrice;
-      }
+    //   if (sortBy === "price") {
+    //     compareA = a.discountPrice || a.basePrice;
+    //     compareB = b.discountPrice || b.basePrice;
+    //   }
 
-      if (typeof compareA === "string") {
-        return sortOrder === "asc"
-          ? compareA.localeCompare(compareB)
-          : compareB.localeCompare(compareA);
-      }
+    //   if (typeof compareA === "string") {
+    //     return sortOrder === "asc"
+    //       ? compareA.localeCompare(compareB)
+    //       : compareB.localeCompare(compareA);
+    //   }
 
-      return sortOrder === "asc" ? compareA - compareB : compareB - compareA;
-    });
+    //   return sortOrder === "asc" ? compareA - compareB : compareB - compareA;
+    // });
+result.sort((a, b) => {
+  let compareA: string | number;
+  let compareB: string | number;
 
+  if (sortBy === "name") {
+    compareA = a.itemName;
+    compareB = b.itemName;
+  } else if (sortBy === "price") {
+    compareA = a.discountPrice || a.basePrice;
+    compareB = b.discountPrice || b.basePrice;
+  } else {
+    compareA = new Date(a.createdAt).getTime();
+    compareB = new Date(b.createdAt).getTime();
+  }
+
+  if (typeof compareA === "string" && typeof compareB === "string") {
+    return sortOrder === "asc"
+      ? compareA.localeCompare(compareB)
+      : compareB.localeCompare(compareA);
+  }
+
+  return sortOrder === "asc"
+    ? Number(compareA) - Number(compareB)
+    : Number(compareB) - Number(compareA);
+});
     return result;
   }, [foods, searchQuery, filterCategory, filterStatus, sortBy, sortOrder]);
 

@@ -36,7 +36,12 @@ export const useCartPage = () => {
     setUpdatingItemId(null);
   };
 
-  const handleCheckout = (items: any[], grandTotal: number, totalItems: number, groupedByRestaurant: any) => {
+  const handleCheckout = (
+    items: any[],
+    grandTotal: number,
+    totalItems: number,
+    groupedByRestaurant: any,
+  ) => {
     if (items.length === 0) {
       alert("Your cart is empty!");
       return;
@@ -51,8 +56,8 @@ export const useCartPage = () => {
       restaurant: Object.values(groupedByRestaurant)[0]?.restaurant,
       timestamp: Date.now(),
     };
-    
-    localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
+
+    // localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
 
     setTimeout(() => {
       router.push("/check");

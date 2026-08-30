@@ -5,6 +5,7 @@
 import useVerifyOtp from "@/customHooks/auth/useOtp";
 
 interface Props {
+   email: string;
   close: () => void;
   openLogin: () => void;
 }

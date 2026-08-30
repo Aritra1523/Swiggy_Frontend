@@ -86,7 +86,7 @@ export const addFoodSchema = yup.object({
 
   image: yup
     .mixed<File>()
-    .required("Food image is required")
+    // .required("Food image is required")
     .test(
       "fileType",
       "Only image files are allowed",

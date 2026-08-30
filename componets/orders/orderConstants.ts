@@ -15,6 +15,7 @@ export const STATUS_FILTERS = [
   "delivered",
   "cancelled",
 ] as const;
+export type StatusFilter = (typeof STATUS_FILTERS)[number];
 
 export const statusConfig = {
   placed: {

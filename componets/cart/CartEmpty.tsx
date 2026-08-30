@@ -1,4 +1,3 @@
-// components/CartEmpty.tsx
 import Link from "next/link";
 import { ShoppingBag, ArrowLeft } from "lucide-react";
 

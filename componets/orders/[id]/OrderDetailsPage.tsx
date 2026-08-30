@@ -577,8 +577,7 @@ export default function OrderDetailsPage() {
 
           <div className="space-y-4">
             {selectedOrder.items?.map((item) => {
-              const itemTotal = item.price * item.quantity;
-
+const itemTotal = (item.price ?? 0) * item.quantity;
               return (
                 <div
                   key={item._id}
@@ -613,9 +612,9 @@ export default function OrderDetailsPage() {
                       </h3>
                     </div>
                     <div className="flex items-center gap-3 text-sm text-gray-500 mt-0.5">
-                      <span>
-                        ₹{item.price.toFixed(2)} × {item.quantity}
-                      </span>
+                     <span>
+  ₹{(item.price ?? 0).toFixed(2)} × {item.quantity}
+</span>
                       {item.variant && (
                         <>
                           <span className="w-1 h-1 bg-gray-300 rounded-full" />
@@ -654,11 +653,11 @@ export default function OrderDetailsPage() {
                   {/* <p className="text-sm font-medium text-gray-900">
                     {selectedOrder.user?.name || "Customer"}
                   </p> */}
-                  {selectedOrder.user?.phone && (
+                  {/* {selectedOrder.user?.phone && (
                     <p className="text-sm text-gray-500">
                       {selectedOrder.user.phone}
                     </p>
-                  )}
+                  )} */}
                 </div>
               </div>
 
@@ -670,11 +669,11 @@ export default function OrderDetailsPage() {
                   <p className="text-sm text-gray-700 leading-relaxed">
                     {selectedOrder.address || "Address not available"}
                   </p>
-                  {selectedOrder.addressNote && (
+                  {/* {selectedOrder.address && (
                     <p className="text-xs text-gray-400 mt-1">
-                      📝 {selectedOrder.addressNote}
+                      📝 {selectedOrder.address}
                     </p>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>
@@ -708,7 +707,7 @@ export default function OrderDetailsPage() {
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">Payment Method</span>
                 <span className="text-gray-900 font-medium capitalize">
-                  {selectedOrder.paymentMethod || "Online"}
+                  { "Online"}
                 </span>
               </div>
 

@@ -1,4 +1,3 @@
-// components/CartHeader.tsx
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
