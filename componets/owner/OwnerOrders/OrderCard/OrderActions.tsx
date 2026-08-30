@@ -1,8 +1,14 @@
 import Swal from "sweetalert2";
 import { useUpdateOrderStatus } from "@/customHooks/owner/useFoodManagement";
 import { ORDER_STATUS_FLOW, NEXT_ACTION_LABEL, isValidTransition } from "./orderConstants";
-
-export function OrderActions({ order, currentStatus, isFinished }) {
+import type { OwnerOrder } from "@/typescript/restaurantOwner/restaurantOwner";
+interface OrderActionsProps {
+  order: OwnerOrder;
+  currentStatus: OwnerOrder["status"];
+  isFinished: boolean;
+}
+import type { OrderStatus } from "./orderConstants";
+export function OrderActions({ order, currentStatus, isFinished }: OrderActionsProps) {
   const { mutate: updateStatus, isPending } = useUpdateOrderStatus();
   const nextStatus = ORDER_STATUS_FLOW[currentStatus];
 
@@ -91,18 +97,16 @@ export function OrderActions({ order, currentStatus, isFinished }) {
   return (
     <div className="flex items-center gap-2">
       {nextStatus && (
-        <button
-          onClick={handleAdvance}
-          disabled={isPending}
-          className="px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isPending
-            ? "Updating..."
-            : NEXT_ACTION_LABEL[
-                currentStatus
-              ]}
-        </button>
-      )}
+  <button
+    onClick={handleAdvance}
+    disabled={isPending}
+    className="px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    {isPending
+      ? "Updating..."
+      : NEXT_ACTION_LABEL[currentStatus as Exclude<OrderStatus, "delivered" | "cancelled">]}
+  </button>
+)}
 
       {isValidTransition(currentStatus, "cancelled") && (
         <button

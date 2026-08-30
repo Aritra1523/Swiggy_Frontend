@@ -1,3 +1,4 @@
+import { User } from "./Register";
 
 export interface VerifyOtpPayload {
   userId: string;
@@ -7,7 +8,7 @@ export interface VerifyOtpPayload {
 export interface VerifyOtpResponse {
   status: boolean;
   message: string;
-  data:'',
-  accessToken:'',
-  refreshToken:""
+  data: User;
+  accessToken: string;
+  refreshToken: string;
 }

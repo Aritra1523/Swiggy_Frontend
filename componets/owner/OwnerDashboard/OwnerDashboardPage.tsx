@@ -414,7 +414,8 @@ export default function OwnerDashboardPage() {
     usePendingFoodCount();
   const availableCount = foods.filter((f) => f.isAvailable).length;
 
-  const totalOrders = ordersRes?.totalOrders ?? 0;
+  // const totalOrders = ordersRes?.totalOrders ?? 0;
+  const totalOrders = ordersRes?.data?.length ?? 0;
   const recentItems = [...foods]
     .sort(
       (a, b) =>

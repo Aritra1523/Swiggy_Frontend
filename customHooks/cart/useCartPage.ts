@@ -53,7 +53,12 @@ export const useCartPage = () => {
       items,
       totalAmount: grandTotal,
       totalItems,
-      restaurant: Object.values(groupedByRestaurant)[0]?.restaurant,
+      // restaurant: Object.values(groupedByRestaurant)[0]?.restaurant,
+      restaurant: (
+  Object.values(groupedByRestaurant) as Array<{
+    restaurant: CheckoutData["restaurant"];
+  }>
+)[0]?.restaurant,
       timestamp: Date.now(),
     };
 

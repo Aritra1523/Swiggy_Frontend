@@ -309,18 +309,31 @@
 //   );
 // }
 
-
 import { IndianRupee } from "lucide-react";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { OrderActions } from "./OrderActions";
+import type {
+  OwnerOrder,
+  OwnerOrderItem,
+} from "@/typescript/restaurantOwner/restaurantOwner";
 
-export function OrderCard({ order }) {
+interface OrderCardProps {
+  order: OwnerOrder;
+}
+
+export function OrderCard({ order }: OrderCardProps) {
   const currentStatus = order.status;
-  const isFinished = currentStatus === "delivered" || currentStatus === "cancelled";
+
+  const isFinished =
+    currentStatus === "delivered" || currentStatus === "cancelled";
 
   // Calculate item total
-  const getItemTotal = (item) => {
-    const price = item.food?.discountPrice || item.food?.basePrice || item.basePrice || 0;
+  const getItemTotal = (item: OwnerOrderItem) => {
+    const price =
+      item.food?.price ||
+      item.basePrice ||
+      0;
+
     return price * item.quantity;
   };
 
@@ -332,21 +345,30 @@ export function OrderCard({ order }) {
           <p className="text-sm font-semibold text-gray-900">
             #{order._id.slice(-6).toUpperCase()}
           </p>
+
           <p className="text-xs text-gray-500 mt-0.5">
             {new Date(order.createdAt).toLocaleString("en-IN")}
           </p>
         </div>
+
         <OrderStatusBadge status={currentStatus} />
       </div>
 
       {/* ITEMS */}
       <div className="space-y-1 mb-3">
         {order.items.map((item) => (
-          <div key={item._id} className="flex items-center justify-between text-sm text-gray-600">
+          <div
+            key={item.food._id}
+            className="flex items-center justify-between text-sm text-gray-600"
+          >
             <span>
-              {item.quantity}× {item.food?.itemName || "Food item unavailable"}
+              {item.quantity}×{" "}
+              {item.food?.itemName || "Food item unavailable"}
             </span>
-            <span className="font-medium">₹{getItemTotal(item)}</span>
+
+            <span className="font-medium">
+              ₹{getItemTotal(item)}
+            </span>
           </div>
         ))}
       </div>

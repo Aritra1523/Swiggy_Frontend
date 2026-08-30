@@ -53,7 +53,8 @@ const foodSlice = createSlice({
       .addCase(fetchFoodList.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.error = null;
-        state.foods = payload.data ?? payload.foods ?? [];
+        // state.foods = payload.data ?? payload.foods ?? [];
+        state.foods = payload.data ?? [];
       })
       .addCase(fetchFoodList.rejected, (state, { payload }) => {
         state.loading = false;

@@ -168,7 +168,29 @@ export const cancelOrder = createAsyncThunk<
     );
   }
 });
+// Update Order Status
 
+export const updateOrderStatus = createAsyncThunk<
+  OrderResponse,
+  {
+    id: string;
+    data: UpdateOrderStatusPayload;
+  },
+  { rejectValue: string }
+>("order/updateOrderStatus", async ({ id, data }, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.put<OrderResponse>(
+      endpoints.updateOrderStatus(id),
+      data,
+    );
+
+    return response.data;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to update order status",
+    );
+  }
+});
 const orderSlice = createSlice({
   name: "order",
 
@@ -368,7 +390,41 @@ const orderSlice = createSlice({
         state.orderLoading = false;
 
         state.orderError = payload || "Failed to cancel order";
-      });
+      })
+      // UPDATE ORDER STATUS
+
+.addCase(updateOrderStatus.pending, (state) => {
+  state.orderLoading = true;
+  state.orderError = null;
+})
+
+.addCase(updateOrderStatus.fulfilled, (state, action) => {
+  state.orderLoading = false;
+
+  if (action.payload.data) {
+    const updatedOrder = action.payload.data;
+
+    const index = state.orders.findIndex(
+      (order) => order._id === updatedOrder._id
+    );
+
+    if (index !== -1) {
+      state.orders[index] = updatedOrder;
+    }
+
+    if (state.selectedOrder?._id === updatedOrder._id) {
+      state.selectedOrder = updatedOrder;
+    }
+  }
+})
+
+.addCase(updateOrderStatus.rejected, (state, { payload }) => {
+  state.orderLoading = false;
+
+  state.orderError =
+    payload || "Failed to update order status";
+})
+    
   },
 });
 

@@ -61,6 +61,16 @@ export interface OwnerRestaurant {
   onboardingStep: number;
   createdAt?: string;
   approvedAt?: string;
+  coverImage?: string;
+  logo?: string;
+    workingDays?: string[];
+ openingClosing?: {
+    slots: {
+      open: string;
+      close: string;
+      _id?: string;
+    }[];
+  };
 }
 
 export interface FoodListPagination {
@@ -165,7 +175,7 @@ export interface OwnerOrder {
   totalAmount: number;
   status:
     | "placed"
-    | "confirmed"
+    | "accepted"
     | "preparing"
     | "out_for_delivery"
     | "delivered"

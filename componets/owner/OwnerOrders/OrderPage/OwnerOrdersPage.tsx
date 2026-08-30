@@ -380,6 +380,8 @@
 //     </main>
 //   );
 // }
+
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -412,8 +414,8 @@ export default function OwnerOrdersPage() {
 
   // Use OwnerOrder type directly from your types
   const orders: OwnerOrder[] = data?.data ?? [];
-  const totalOrders: number = data?.totalOrders ?? 0;
-
+  // const totalOrders: number = data?.totalOrders ?? 0;
+const totalOrders: number = orders.length;
   // Socket: live new-order notifications
   useEffect(() => {
     const handleNewOrder = (newOrderData: any) => {
