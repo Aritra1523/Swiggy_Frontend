@@ -356,7 +356,7 @@ export function OrderCard({ order }: OrderCardProps) {
 
       {/* ITEMS */}
       <div className="space-y-1 mb-3">
-        {order.items.map((item) => (
+        {/* {order.items.map((item) => (
           <div
             key={item.food._id}
             className="flex items-center justify-between text-sm text-gray-600"
@@ -370,7 +370,21 @@ export function OrderCard({ order }: OrderCardProps) {
               ₹{getItemTotal(item)}
             </span>
           </div>
-        ))}
+        ))} */}
+        {order.items.map((item) => (
+  <div
+    key={item._id}   
+    className="flex items-center justify-between text-sm text-gray-600"
+  >
+    <span>
+      {item.quantity}×{" "}
+      {item.food?.itemName || "Item no longer available"}
+    </span>
+    <span className="font-medium">
+      ₹{getItemTotal(item)}
+    </span>
+  </div>
+))}
       </div>
 
       {/* FOOTER */}

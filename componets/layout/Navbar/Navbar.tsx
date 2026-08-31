@@ -150,13 +150,18 @@ export default function Navbar() {
   return (
     <>
       <nav className="sticky top-0 z-50 h-20 flex items-center justify-between px-4 sm:px-6 md:px-10 shadow-md bg-white/95 backdrop-blur-sm border-b border-gray-100">
+     
         {/* Logo */}
         <div
           onClick={() => router.push("/")}
           className="flex items-center gap-2 sm:gap-3 cursor-pointer group flex-shrink-0"
         >
-          <div className="bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-xl w-9 h-9 sm:w-12 sm:h-12 flex items-center justify-center text-lg sm:text-2xl font-bold shadow-md shadow-orange-200 group-hover:scale-105 transition-transform duration-200">
-            H
+          <div className="relative w-9 h-9 sm:w-12 sm:h-12 flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
+            <img
+              src="/icon.jpg"
+              alt="Hungrly Logo"
+              className="w-full h-full object-contain drop-shadow-md"
+            />
           </div>
           <h1 className="text-xl sm:text-2xl font-extrabold text-gray-800 tracking-tight">
             Hungrly

@@ -63,8 +63,8 @@ export interface OwnerRestaurant {
   approvedAt?: string;
   coverImage?: string;
   logo?: string;
-    workingDays?: string[];
- openingClosing?: {
+  workingDays?: string[];
+  openingClosing?: {
     slots: {
       open: string;
       close: string;
@@ -161,10 +161,11 @@ export interface ToggleAvailabilityResponse {
 // --- Owner-side order types ---
 
 export interface OwnerOrderItem {
+  _id: string;
   food: { _id: string; itemName: string; price?: number };
   quantity: number;
   price?: number;
-  basePrice:number
+  basePrice: number;
 }
 
 export interface OwnerOrder {
