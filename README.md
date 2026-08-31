@@ -1,6 +1,6 @@
 # 🍔 Swiggy Clone
 
-A full-stack food delivery web application inspired by Swiggy, built with **Next.js, TypeScript, Tailwind CSS, Redux Toolkit, TanStack Query, Axios, and Socket.IO**.
+A full-stack food delivery web application inspired by Swiggy, built with **Next.js, TypeScript, Tailwind CSS, Redux Toolkit, TanStack Query, Zustand, Axios, and Socket.IO**.
 
 ## 🚀 Features
 
@@ -23,11 +23,13 @@ A full-stack food delivery web application inspired by Swiggy, built with **Next
 * View and manage orders
 * Real-time new order notifications
 
-### 👨‍💼 Admin
+### 👨‍💼 Admin Panel
 
-* Restaurant application management
+* Admin dashboard
+* View pending restaurant applications
 * Approve/reject restaurants
 * Manage approved restaurants
+* Manage restaurant-related data
 
 ## 🛠️ Tech Stack
 
@@ -56,53 +58,49 @@ A full-stack food delivery web application inspired by Swiggy, built with **Next
 ## 🏗️ Architecture
 
 ```text
-Next.js
-   ↓
-Components
-   ↓
-Custom Hooks
-   ↓
-Redux / TanStack Query
-   ↓
+User / Owner Frontend
+        ↓
+Next.js + React
+        ↓
+Redux / TanStack Query / Zustand
+        ↓
 Axios
-   ↓
-Node.js + Express API
-   ↓
+        ↓
+Node.js + Express Backend
+        ↓
 MongoDB
 ```
 
-Real-time communication is handled using **Socket.IO**.
+Real-time order notifications are handled using **Socket.IO**.
 
 ## ⚙️ Installation
 
 ```bash
 git clone https://github.com/Aritra1523/Swiggy_Frontend.git
-
 cd Swiggy_Frontend
-
 npm install
-
 npm run dev
 ```
 
-Application runs at:
+Frontend runs at:
 
 ```text
 http://localhost:3000
 ```
 
-## 🔐 Environment Variables
+## 👨‍💼 Admin Panel
 
-Create a `.env.local` file:
+The project has a separate **Admin Panel** built with Next.js, TypeScript, Zustand, Axios, Yup and Tailwind CSS.
 
-```env
-NEXT_PUBLIC_API_URL=http://localhost:4000
-NEXT_PUBLIC_SOCKET_URL=http://localhost:4000
-```
+**Admin Panel:**
+https://github.com/Aritra1523/Swiggy_Admin
 
 ## 🔗 Backend
 
-[Swiggy Backend](https://github.com/NILL-DATTA/Swiggy_Node_Js)
+The backend is built with **Node.js, Express.js, MongoDB and JWT authentication**.
+
+**Backend:**
+https://github.com/NILL-DATTA/Swiggy_Node_Js
 
 ## 👨‍💻 Author
 
