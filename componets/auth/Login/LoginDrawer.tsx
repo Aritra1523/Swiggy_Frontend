@@ -1,11 +1,9 @@
 "use client";
 
 import useLogin from "@/customHooks/auth/ueLogin";
+import { Props } from "@/typescript/auth/Login";
 
-interface Props {
-  close: () => void;
-  openRegister: () => void;
-}
+
 
 export default function LoginDrawer({ close, openRegister }: Props) {
   const { register, handleSubmit, errors, isSubmitting } = useLogin(close);

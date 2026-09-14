@@ -244,7 +244,7 @@ const QuickActionCard = ({
 // Recent Item Component
 const RecentItem = ({ food }: { food: any }) => (
   <Link
-    href={`/owner/foods/${food._id}`}
+    href={`/owner/foods/details/${food._id}`}
     className="flex items-center justify-between py-3 px-3 rounded-xl hover:bg-gray-50 transition-all group"
   >
     <div className="flex items-center gap-3 min-w-0 flex-1">

@@ -1,15 +1,9 @@
 "use client";
 
+import { Props } from "@/typescript/foodListType/type";
 import { useState } from "react";
 
-interface Props {
-  selectedCategory: string;
-  onCategoryChange: (category: string) => void;
-  priceRange: [number, number];
-  onPriceRangeChange: (range: [number, number]) => void;
-  sortBy: string;
-  onSortChange: (sort: string) => void;
-}
+
 
 export default function FoodFilters({
   selectedCategory,

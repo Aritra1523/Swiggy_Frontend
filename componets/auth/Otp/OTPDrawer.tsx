@@ -3,12 +3,9 @@
 "use client";
 
 import useVerifyOtp from "@/customHooks/auth/useOtp";
+import { Props } from "@/typescript/auth/Otp";
 
-interface Props {
-   email: string;
-  close: () => void;
-  openLogin: () => void;
-}
+
 
 export default function OTPDrawer({ close, openLogin }: Props) {
   const { register, handleSubmit, errors, isSubmitting } = useVerifyOtp(

@@ -1,16 +1,11 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Minus, Plus, Trash2 } from "lucide-react";
-import { CartItem as CartItemType } from "@/typescript/cartTypes/cartTypes";
+import { CartItemProps, CartItem as CartItemType } from "@/typescript/cartTypes/cartTypes";
 import { getDiscountPercentage, getItemPrice } from "./cartUtils";
 
 
-interface CartItemProps {
-  item: CartItemType;
-  isUpdating: boolean;
-  onIncrement: (foodId: string) => void;
-  onDecrement: (foodId: string) => void;
-}
+
 
 export const CartItem = ({ 
   item, 

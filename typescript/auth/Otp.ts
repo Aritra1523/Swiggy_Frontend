@@ -12,3 +12,8 @@ export interface VerifyOtpResponse {
   accessToken: string;
   refreshToken: string;
 }
+export interface Props {
+   email: string;
+  close: () => void;
+  openLogin: () => void;
+}

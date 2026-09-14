@@ -1,12 +1,12 @@
-import OrderDetailsPage from '@/componets/orders/[id]/OrderDetailsPage'
-import React from 'react'
+import OrderDetailsPage from "@/componets/orders/[id]/OrderDetailsPage";
+import React from "react";
 
 const page = () => {
   return (
     <div>
-        <OrderDetailsPage/>
+      <OrderDetailsPage />
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;

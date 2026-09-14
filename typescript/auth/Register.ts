@@ -29,3 +29,8 @@ export interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
 }
+export interface Props {
+  close: () => void;
+  backToLogin: () => void;
+  onSuccess: (email: string) => void;
+}

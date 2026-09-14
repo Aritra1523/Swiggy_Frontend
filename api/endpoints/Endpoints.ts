@@ -46,4 +46,15 @@ export const endpoints = {
   updateOrderStatus: (id: string) => `/orders/${id}/status`,
   restaurantStatus: "/restaurant/status",
   pendingFoodCount: "/restaurant/foods/pending-count",
+
+   //Delivery Partner
+  applyDelivery: "/auth/apply/delivery",
+  deliveryOtp: "/delivery/otp",
+  deliveryResendOtp: "/delivery/resend-otp",
+  deliveryDetails: "/delivery/details",
+  deliveryDocuments: "/delivery/documents",
+  deliveryContract: "/delivery-contract",
+  myDeliveryProfile: "/delivery/me",
+  toggleDeliveryOnline: "/delivery/toggle-online",
 };
+

@@ -1,10 +1,8 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { CartHeaderProps } from "@/typescript/cartTypes/cartTypes";
 
-interface CartHeaderProps {
-  totalItems: number;
-  grandTotal: number;
-}
+
 
 export const CartHeader = ({ totalItems, grandTotal }: CartHeaderProps) => {
   return (

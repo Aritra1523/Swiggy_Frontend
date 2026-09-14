@@ -15,3 +15,7 @@ export interface LoginResponse {
     role: string;
   };
 }
+export interface Props {
+  close: () => void;
+  openRegister: () => void;
+}

@@ -51,3 +51,26 @@ export interface CheckoutData {
   restaurant: Restaurant;
   timestamp: number;
 }
+export interface CartHeaderProps {
+  totalItems: number;
+  grandTotal: number;
+}
+
+export interface CartItemProps {
+  item: CartItem;
+  isUpdating: boolean;
+  onIncrement: (foodId: string) => void;
+  onDecrement: (foodId: string) => void;
+}
+export interface OrderSummaryProps {
+  billDetails: BillDetails;
+  isCheckingOut: boolean;
+  itemsCount: number;
+  onCheckout: () => void;
+}
+export interface RestaurantGroupProps {
+  group: GroupedRestaurant;
+  updatingItemId: string | null;
+  onIncrement: (foodId: string) => void;
+  onDecrement: (foodId: string) => void;
+}

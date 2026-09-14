@@ -1,10 +1,7 @@
 import useRegister from "@/customHooks/auth/useRegister";
+import { Props } from "@/typescript/auth/Register";
 
-interface Props {
-  close: () => void;
-  backToLogin: () => void;
-  onSuccess: (email: string) => void;
-}
+
 
 export default function RegisterDrawer({
   close,

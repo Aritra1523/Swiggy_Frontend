@@ -1,13 +1,8 @@
 import { CreditCard, Bike, ChevronRight } from "lucide-react";
-import { BillDetails } from "@/typescript/cartTypes/cartTypes";
+import { BillDetails, OrderSummaryProps } from "@/typescript/cartTypes/cartTypes";
 import { isFreeDelivery } from "./cartUtils";
 
-interface OrderSummaryProps {
-  billDetails: BillDetails;
-  isCheckingOut: boolean;
-  itemsCount: number;
-  onCheckout: () => void;
-}
+
 
 export const OrderSummary = ({
   billDetails,

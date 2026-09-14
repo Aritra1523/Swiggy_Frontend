@@ -1,15 +1,9 @@
-// components/RestaurantGroup.tsx
 import Image from "next/image";
 import { Store, Clock, MapPin } from "lucide-react";
-import { GroupedRestaurant } from "@/typescript/cartTypes/cartTypes";
+import { GroupedRestaurant, RestaurantGroupProps } from "@/typescript/cartTypes/cartTypes";
 import { CartItem } from "./CartItem";
 
-interface RestaurantGroupProps {
-  group: GroupedRestaurant;
-  updatingItemId: string | null;
-  onIncrement: (foodId: string) => void;
-  onDecrement: (foodId: string) => void;
-}
+
 
 export const RestaurantGroup = ({
   group,

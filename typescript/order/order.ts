@@ -143,3 +143,14 @@ export interface OrderState {
 
   orderError: string | null;
 }
+
+export interface OrderSummaryProps {
+  totalItems: number;
+  totalAmount: number;
+  address: string;
+  setAddress: (value: string) => void;
+  orderError: string | null;
+  placingOrder: boolean;
+  orderLoading: boolean;
+  onPlaceOrder: () => void;
+}

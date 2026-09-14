@@ -89,3 +89,12 @@ export interface RestaurantState {
   loading: boolean;
   error: string | null;
 }
+
+export interface Props {
+  selectedCategory: string;
+  onCategoryChange: (category: string) => void;
+  priceRange: [number, number];
+  onPriceRangeChange: (range: [number, number]) => void;
+  sortBy: string;
+  onSortChange: (sort: string) => void;
+}
