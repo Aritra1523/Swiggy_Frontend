@@ -93,3 +93,69 @@ export interface ToggleOnlineResponse {
   message: string;
   data: { isOnline: boolean };
 }
+
+export interface DeliveryOrder {
+  _id: string;
+
+  user?: {
+    _id: string;
+    name?: string;
+    email?: string;
+    phone?: string;
+  };
+
+  restaurant?: {
+    _id: string;
+    name?: string;
+    address?: string;
+  };
+
+  items: {
+    food?: {
+      _id: string;
+      name?: string;
+      image?: string;
+    };
+    quantity: number;
+    price: number;
+  }[];
+
+  totalAmount: number;
+
+  deliveryFee: number;
+
+  address: string;
+
+  status:
+    | "placed"
+    | "accepted"
+    | "preparing"
+    | "ready"
+    | "out_for_delivery"
+    | "delivered"
+    | "cancelled";
+
+  deliveryStatus:
+    | "unassigned"
+    | "assigned"
+    | "accepted"
+    | "picked_up"
+    | "out_for_delivery"
+    | "delivered";
+
+  deliveryPartner?: string;
+
+  deliveryAcceptedAt?: string;
+  pickedUpAt?: string;
+  deliveredAt?: string;
+
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface DeliveryEarnings {
+  today: number;
+  week: number;
+  month: number;
+  allTime: number;
+}

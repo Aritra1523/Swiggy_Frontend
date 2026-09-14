@@ -5,7 +5,8 @@ export const endpoints = {
 
   //user
   restaurantList: "/user/restaurant-list",
-  restaurantFood: (restaurantId: string) => `/user/restaurant/${restaurantId}/foods`,
+  restaurantFood: (restaurantId: string) =>
+    `/user/restaurant/${restaurantId}/foods`,
   foodList: "/user/food_list",
 
   addCart: "/add/cart",
@@ -47,7 +48,7 @@ export const endpoints = {
   restaurantStatus: "/restaurant/status",
   pendingFoodCount: "/restaurant/foods/pending-count",
 
-   //Delivery Partner
+  //Delivery Partner
   applyDelivery: "/auth/apply/delivery",
   deliveryOtp: "/delivery/otp",
   deliveryResendOtp: "/delivery/resend-otp",
@@ -56,5 +57,27 @@ export const endpoints = {
   deliveryContract: "/delivery-contract",
   myDeliveryProfile: "/delivery/me",
   toggleDeliveryOnline: "/delivery/toggle-online",
-};
 
+  // Delivery Partner Orders
+deliveryAvailableOrders: "/delivery/orders/available",
+
+deliveryAcceptOrder: (orderId: string) =>
+  `/delivery/orders/${orderId}/accept`,
+
+deliveryActiveOrder: "/delivery/orders/active",
+
+deliveryPickupOrder: (orderId: string) =>
+  `/delivery/orders/${orderId}/picked-up`,
+
+deliveryOutForDelivery: (orderId: string) =>
+  `/delivery/orders/${orderId}/out-for-delivery`,
+
+deliveryDelivered: (orderId: string) =>
+  `/delivery/orders/${orderId}/delivered`,
+
+deliveryHistory: "/delivery/orders/history",
+
+deliveryEarnings: "/delivery/earnings",
+
+deliveryEarningsHistory: "/delivery/earnings/history",
+};

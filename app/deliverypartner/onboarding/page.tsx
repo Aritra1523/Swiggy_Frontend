@@ -1,15 +1,15 @@
 "use client";
 
-import AccountStep from "@/componets/deliverySignup/AccountStep";
-import ContractStep from "@/componets/deliverySignup/ContractStep";
-import DocumentsStep from "@/componets/deliverySignup/DocumentsStep";import PendingApproval from "@/componets/deliverySignup/PendingApproval";
-import VehicleDetailsStep from "@/componets/deliverySignup/VehicleDetailsStep";
-import VerifyDeliveryOtpStep from "@/componets/deliverySignup/VerifyDeliveryOtpStep";
-import VerifySignupOtpStep from "@/componets/deliverySignup/VerifySignupOtpStep";
-import DeliveryStepper from "@/componets/deliverySignup/DeliveryStepper";
 import { useState } from "react";
 
-
+import DeliveryStepper from "@/componets/deliverySignup/DeliveryStepper";
+import AccountStep from "@/componets/deliverySignup/AccountStep";
+import VerifySignupOtpStep from "@/componets/deliverySignup/VerifySignupOtpStep";
+import VerifyDeliveryOtpStep from "@/componets/deliverySignup/VerifyDeliveryOtpStep";
+import VehicleDetailsStep from "@/componets/deliverySignup/VehicleDetailsStep";
+import DocumentsStep from "@/componets/deliverySignup/DocumentsStep";
+import ContractStep from "@/componets/deliverySignup/ContractStep";
+import PendingApproval from "@/componets/deliverySignup/PendingApproval";
 
 export default function DeliveryPartnerOnboardingPage() {
   const [step, setStep] = useState(1);
