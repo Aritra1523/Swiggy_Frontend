@@ -110,10 +110,7 @@ export type OrderStatus =
   | "delivered"
   | "cancelled";
 
-// Status flow for normal progression.
-// Owner's control stops at "ready_for_pickup" — from there a delivery
-// partner takes over (out_for_delivery -> delivered), so there is
-// intentionally no mapping past this point.
+
 export const ORDER_STATUS_FLOW: Partial<Record<OrderStatus, OrderStatus>> = {
   placed: "accepted",
   accepted: "preparing",
@@ -184,10 +181,7 @@ export const STATUS_CONFIG: Record<
   },
 };
 
-// Labels for next action buttons. Owner's flow ends at "preparing" -> Ready
-// for Pickup; ready_for_pickup/out_for_delivery entries exist only to
-// satisfy the type (ORDER_STATUS_FLOW has no mapping for them, so the
-// button never actually renders for those statuses).
+
 export const NEXT_ACTION_LABEL: Record<
   Exclude<OrderStatus, "delivered" | "cancelled">,
   string

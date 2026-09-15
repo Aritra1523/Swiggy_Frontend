@@ -109,9 +109,7 @@ interface OrderCardProps {
 export function OrderCard({ order }: OrderCardProps) {
   const currentStatus = order.status;
  
-  // Owner's control ends the moment the order is ready for pickup — from
-  // here on a delivery partner owns the status (out_for_delivery ->
-  // delivered), so the owner just sees the badge update, same as a customer.
+ 
   const isFinished =
     currentStatus === "delivered" ||
     currentStatus === "cancelled" ||
@@ -147,21 +145,7 @@ export function OrderCard({ order }: OrderCardProps) {
  
       {/* ITEMS */}
       <div className="space-y-1 mb-3">
-        {/* {order.items.map((item) => (
-          <div
-            key={item.food._id}
-            className="flex items-center justify-between text-sm text-gray-600"
-          >
-            <span>
-              {item.quantity}×{" "}
-              {item.food?.itemName || "Food item unavailable"}
-            </span>
- 
-            <span className="font-medium">
-              ₹{getItemTotal(item)}
-            </span>
-          </div>
-        ))} */}
+      
         {order.items.map((item) => (
   <div
     key={item._id}   
