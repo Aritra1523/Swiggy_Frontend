@@ -134,13 +134,17 @@ export default function Navbar() {
   };
 
   // Become Partner
-  const handleBecomePartner = () => {
-    if (!user) {
-      setAuth("login");
-      return;
-    }
-    setPartnerStep("email");
-  };
+  // const handleBecomePartner = () => {
+  //   if (!user) {
+  //     setAuth("login");
+  //     return;
+  //   }
+  //   setPartnerStep("email");
+  // };
+  // Become Partner — always lands on the partner selection screen first.
+const handleBecomePartner = () => {
+  router.push("/partner");
+};
 
   const cartCount =
     cart?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
