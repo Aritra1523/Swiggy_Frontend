@@ -1,9 +1,10 @@
 import { OrderSummaryProps } from "@/typescript/order/order";
 
-
 export const OrderSummary = ({
   totalItems,
   totalAmount,
+  deliveryFee,
+  finalTotal,
   address,
   setAddress,
   orderError,
@@ -13,7 +14,9 @@ export const OrderSummary = ({
 }: OrderSummaryProps) => (
   <div className="lg:col-span-1">
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-24">
-      <h2 className="text-xl font-bold text-gray-900 mb-5">Order Summary</h2>
+      <h2 className="text-xl font-bold text-gray-900 mb-5">
+        Order Summary
+      </h2>
 
       <div className="flex justify-between text-gray-600 mb-3">
         <span>Items</span>
@@ -22,18 +25,27 @@ export const OrderSummary = ({
 
       <div className="flex justify-between text-gray-600 mb-3">
         <span>Subtotal</span>
-        <span>₹{totalAmount}</span>
+        <span>₹{totalAmount.toFixed(2)}</span>
       </div>
 
       <div className="flex justify-between text-gray-600 mb-4">
         <span>Delivery Fee</span>
-        <span className="text-green-600">Free</span>
+
+        {deliveryFee === 0 ? (
+          <span className="text-green-600 font-medium">
+            Free
+          </span>
+        ) : (
+          <span className="text-gray-900">
+            ₹{deliveryFee.toFixed(2)}
+          </span>
+        )}
       </div>
 
       <div className="border-t border-gray-200 pt-4">
         <div className="flex justify-between text-lg font-bold text-gray-900">
           <span>Total</span>
-          <span>₹{totalAmount}</span>
+          <span>₹{finalTotal.toFixed(2)}</span>
         </div>
       </div>
 
@@ -45,7 +57,10 @@ export const OrderSummary = ({
           rows={4}
           className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 resize-none transition-all placeholder-gray-600 text-black"
         />
-        <p className="text-xs text-gray-400 mt-1">Minimum 5 characters</p>
+
+        <p className="text-xs text-gray-400 mt-1">
+          Minimum 5 characters
+        </p>
       </div>
 
       {orderError && (
@@ -56,7 +71,11 @@ export const OrderSummary = ({
 
       <button
         onClick={onPlaceOrder}
-        disabled={placingOrder || orderLoading || address.trim().length < 5}
+        disabled={
+          placingOrder ||
+          orderLoading ||
+          address.trim().length < 5
+        }
         className="w-full mt-6 py-3.5 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-colors"
       >
         {placingOrder || orderLoading ? (
@@ -65,7 +84,7 @@ export const OrderSummary = ({
             Placing Order...
           </span>
         ) : (
-          `Place Order • ₹${totalAmount}`
+          `Place Order • ₹${finalTotal.toFixed(2)}`
         )}
       </button>
     </div>

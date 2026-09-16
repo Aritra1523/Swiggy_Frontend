@@ -23,11 +23,20 @@ export default function CheckoutPage() {
     (total, item) => total + Number(item.quantity || 0),
     0,
   );
-  const totalAmount = items.reduce(
-    (total, item) =>
-      total + Number(item.price || 0) * Number(item.quantity || 0),
-    0,
-  );
+  // const totalAmount = items.reduce(
+  //   (total, item) =>
+  //     total + Number(item.price || 0) * Number(item.quantity || 0),
+  //   0,
+  // );
+  const subtotal = items.reduce(
+  (total, item) =>
+    total + Number(item.price || 0) * Number(item.quantity || 0),
+  0,
+);
+
+const deliveryFee = subtotal < 50 ? 0 : 30;
+
+const finalTotal = subtotal + deliveryFee;
 
   const handlePlaceOrderClick = async () => {
     const trimmedAddress = address.trim();
@@ -100,16 +109,18 @@ export default function CheckoutPage() {
             restaurant={cart?.restaurant}
             onRemoveItem={handleDecrementCartItem}
           />
-          <OrderSummary
-            totalItems={totalItems}
-            totalAmount={totalAmount}
-            address={address}
-            setAddress={setAddress}
-            orderError={orderError}
-            placingOrder={placingOrder}
-            orderLoading={orderLoading}
-            onPlaceOrder={handlePlaceOrderClick}
-          />
+         <OrderSummary
+  totalItems={totalItems}
+  totalAmount={subtotal}
+  deliveryFee={deliveryFee}
+  finalTotal={finalTotal}
+  address={address}
+  setAddress={setAddress}
+  orderError={orderError}
+  placingOrder={placingOrder}
+  orderLoading={orderLoading}
+  onPlaceOrder={handlePlaceOrderClick}
+/>
         </div>
       </div>
     </main>

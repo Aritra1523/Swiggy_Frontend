@@ -45,8 +45,7 @@ export default function DeliveryPartnerDashboard() {
   const activeResponse = activeQuery.data;
   const earningsResponse = earningsQuery.data;
 
-  const availableOrders =
-    availableResponse?.data?.orders ?? availableResponse?.data ?? [];
+  const availableOrders = availableResponse?.data ?? [];
 
   const activeOrder =
     activeResponse?.data?.order ?? activeResponse?.data ?? null;
@@ -150,29 +149,39 @@ export default function DeliveryPartnerDashboard() {
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 md:px-6">
         {/* STATS */}
 
-        <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <section className="grid grid-cols-2 gap-4 md:grid-cols-5">
           <StatCard
             icon={<Wallet size={22} />}
             title="Today"
-            value={`₹${earnings.today ?? 0}`}
+            value={`₹${earnings.today?.earnings ?? 0}`}
+            subtitle={`${earnings.today?.deliveries ?? 0} deliveries`}
           />
 
           <StatCard
             icon={<IndianRupee size={22} />}
             title="This Week"
-            value={`₹${earnings.week ?? 0}`}
+            value={`₹${earnings.thisWeek?.earnings ?? 0}`}
+            subtitle={`${earnings.thisWeek?.deliveries ?? 0} deliveries`}
           />
 
           <StatCard
             icon={<Package size={22} />}
             title="This Month"
-            value={`₹${earnings.month ?? 0}`}
+            value={`₹${earnings.thisMonth?.earnings ?? 0}`}
+            subtitle={`${earnings.thisMonth?.deliveries ?? 0} deliveries`}
           />
 
           <StatCard
             icon={<CheckCircle2 size={22} />}
             title="All Time"
-            value={`₹${earnings.allTime ?? 0}`}
+            value={`₹${earnings.allTime?.earnings ?? 0}`}
+            subtitle={`${earnings.allTime?.deliveries ?? 0} deliveries`}
+          />
+
+          <StatCard
+            icon={<Truck size={22} />}
+            title="Total Deliveries"
+            value={`${earnings.allTime?.deliveries ?? 0}`}
           />
         </section>
 
@@ -323,7 +332,7 @@ export default function DeliveryPartnerDashboard() {
             </div>
           )}
         </section>
-        <DeliveryHistoryPage/>
+        <DeliveryHistoryPage />
       </main>
     </div>
   );
@@ -333,10 +342,12 @@ function StatCard({
   icon,
   title,
   value,
+  subtitle,
 }: {
   icon: React.ReactNode;
   title: string;
   value: string;
+  subtitle?: string;
 }) {
   return (
     <div className="rounded-2xl border bg-white p-4 shadow-sm">
@@ -347,6 +358,10 @@ function StatCard({
       <p className="text-sm text-slate-500">{title}</p>
 
       <p className="mt-1 text-xl font-bold text-slate-900">{value}</p>
+
+      {subtitle && (
+        <p className="mt-0.5 text-xs text-slate-400">{subtitle}</p>
+      )}
     </div>
   );
 }

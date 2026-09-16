@@ -311,4 +311,6 @@ export interface OrderSummaryProps {
   placingOrder: boolean;
   orderLoading: boolean;
   onPlaceOrder: () => void;
+  deliveryFee: number;
+finalTotal: number;
 }
